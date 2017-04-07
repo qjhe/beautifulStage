@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta name="apple-wap-web-app-capable" content="yes">
+	<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+	<meta name="format-detection" content="telephone=no"/>
+	<link rel="stylesheet" type="text/css" href="css/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="css/base.css"/>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	<script src="js/base.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	    remFn(10);
+	</script>
+</head>
+<body>
+	<div class="commWidth">
+		<div class="beauWrap">
+			<header>
+			    <div class="left"><i class="icon-keyboard_arrow_left"></i></div>
+			</header>
+			<div class="bs-logo"></div>
+			<form action="" method="post" id="myform">
+				<ul class="bs-info">
+					<li class="bs-inpt"><span class="icon-phone-num"></span><input type="tel" name="" id="telNum" value="" placeholder="请输入手机号码" maxlength="11" max="11"/></li>
+					<li><a href="javascript:;" class="Bs-Btn bs-gray" id="nextBtn">下一步</a></li>
+					<!--bs-gray-->
+				</ul>
+			</form>
+			<div class="spay-msg-box"></div>
+		</div>
+	</div>
+	<script src="js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/ssValidate.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		loader.init();
+		/*if(getCookie("telNum")&&getCookie("telNum")!=""){
+			$("#telNum").val(getCookie("telNum"))
+		}*/
+		var $telNum=$("#telNum"),$nextBtn=$("#nextBtn");
+		var _v=new mValidate();
+		$nextBtn.off("click");
+		$telNum.on("focusin",highNextbtn);
+		if($telNum.val()!=""){
+			$nextBtn.removeClass("bs-gray").off("click").on("click",nextFun)
+		}
+		function highNextbtn(){
+			if($nextBtn.hasClass("bs-gray")){
+				$nextBtn.removeClass("bs-gray").off("click").on("click",nextFun)
+			}
+		}
+		
+		function nextFun(){
+			var stimer=null;
+			if(validFun()){
+				var phoneNum=$("#telNum").val();
+				$.ajax({
+					type: "post",
+					url: apiPath+"appBeCalled/verifyMobile?t=" + (+new Date()),
+					data: {mobile:phoneNum},
+					beforeSend: function (XMLHttpRequest) {
+						loader.showL();
+					},
+					success: function (data) {
+						if(data.errorCode==1){//已存在
+							location.href="login2.html?phoneNum="+phoneNum;
+						}else if(data.errorCode==0){
+							location.href="register.html?phoneNum="+phoneNum;
+						}
+						console.log(data)
+					},
+					error:function(){
+
+					}
+				});
+			}
+		}
+		function validFun(){
+			var stimer=null;
+			if(!_v.isEmpty($telNum.val())){
+				spayErrorMsg(stimer,"不能为空");
+				return false;
+			}
+			if(!_v.mobile($telNum.val())){
+				spayErrorMsg(stimer,"手机号格式不对");
+				return false;
+			}
+			if(_v.isEmpty($telNum.val())&&_v.mobile($telNum.val())){
+				return true;
+			}
+		}
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no" />
+<title>账户中心</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/icon.css">
+    <link rel="stylesheet" href="css/style.css">
+<script src="js/base.js"></script>
+<script type="text/javascript">
+    remFn(10);
+</script>
+</head>
+<body>
+<header>
+    <div class="left"><a href="javascript:location.href = urlPath + 'productList.html'">&nbsp;</a><i class="icon-keyboard_arrow_left"></i></div>
+    <div class="title toe">账户中心</div>
+    <div class="right"><i class=""></i></div>
+</header>
+<section class="acc-body">
+    <div class="user-info">
+        <a href="javascript:location.href = urlPath + 'personCenter.html'">&nbsp;</a>
+        <div class="user-wrapper fl">
+            <div>
+                <i class="icon-portrait"></i>
+            </div>
+        </div>
+        <div class="text fl" id="userName"></div>
+        <div class="icon fr"><i class="icon-keyboard_arrow_right"></i></div>
+    </div>
+    <div class="order-list">
+        <!--<div class="empty"><img class="empty-img" src="./images/emptyBg.png" alt="暂无数据"><p>暂无订单</p></div>-->
+        <h3 class="padding30 text">我的订单</h3>
+        <ul id="orderList">
+            <!--<li>-->
+                <!--<div class="order-item">-->
+                    <!--<h3 class="title">-->
+                        <!--<img class="fl" src="./images/orderTitle.png" alt="美丽分期">-->
+                        <!--<span class="status fr">未完成</span>-->
+                    <!--</h3>-->
+                    <!--<ul class="order-item-info">-->
+                        <!--<li><span>订单总价：</span><em>¥<i>10000.00</i></em></li>-->
+                        <!--<li><span>分期期数：</span><em><i>10</i>期</em></li>-->
+                        <!--<li><span>申请时间：</span><em><i>2017/02/14</i></em></li>-->
+                    <!--</ul>-->
+                    <!--<div class="order-item-status">-->
+                        <!--<a href="#">去松鼠贷APP补充资料</a>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</li>-->
+        </ul>
+    </div>
+</section>
+<div class="pop-product-details">
+    <div class="title">
+        <div class="close"><i class="icon-close-bold"></i></div>
+        <div class="text">订单明细</div>
+    </div>
+    <h3 class="product-list-title"><span>&nbsp;产品</span><span>&nbsp;金额</span><span>&nbsp;数量</span></h3>
+    <div class="table-wrapper">
+        <table id="orderProductList">
+            <tr><td>瘦脸针</td><td>¥3000</td><td>12</td></tr>
+            <tr><td>玻尿酸注射</td><td>¥1200</td><td>7</td></tr>
+            <tr><td>韩式假体隆鼻</td><td>¥3600</td><td>3</td></tr>
+            <tr><td>韩式三点双眼皮皮韩式三点双眼皮</td><td>¥2300</td><td>9</td></tr>
+            <tr><td>韩式水光针</td><td>¥8800</td><td>1</td></tr>
+        </table>
+    </div>
+</div>
+<div class="meba"></div>
+</body>
+<script src="./js/jquery-2.1.4.min.js"></script>
+<script>
+loader.init();
+var stimer = null;
+//获取用户信息 userName
+$.ajax({
+    type: "get",
+    dataType: "json",
+    url: apiPath + "beautiful/getUserInfo?t=" + (+new Date()),
+    beforeSend: function (XMLHttpRequest) {
+        loader.showL();
+    },
+    success: function (d) {
+        if (d.isJump == 1) location.href = urlPath + "login.html";
+        var name = d.data.userName != null ? d.data.userName : d.data.mobile;
+        $("#userName").html(name);
+    },
+    error: function (XMLHttpRequest, textStatus, errorThrown) {
+        loader.hideL();
+        spayErrorMsg(stimer,"网络错误",3000);
+    }
+});
+//分页参数
+var page = 0,pageSize = 20;
+
+var ppd = $(".pop-product-details"),
+        meba = $(".meba"),
+        close = $(".close");
+
+close.on("click",function(){
+    meba.removeClass("active");
+    ppd.hide();
+});
+getData();
+function getData(){
+    $.ajax({
+        type: "get",
+        dataType: "json",
+        url: apiPath + "beautiful/repaymentInfo?t=" + (+new Date()),
+        data: {page: page,pageSize:pageSize},
+        beforeSend: function (XMLHttpRequest) {
+            loader.showL();
+        },
+        success: function (d) {
+            if(d.errorCode==0){
+                var data = d.data;
+                //data.length = 0;
+                if(data.length<1){
+                    $(".order-list").html('<div class="empty"><img class="empty-img" src="./images/emptyBg.png" alt="暂无数据"><p>暂无订单</p></div>');
+                }
+                var html = $.map(data,function(o,i){
+                    var title_ = o.contractNumber.length>0?'<span class="span-title fl">'+ o.contractNumber +'</span>':'<img class="fl" src="./images/orderTitle.png" alt="美丽分期">';
+                    return '<li>'+
+                            '<div class="order-item">'+
+                            '<h3 class="title">'+ title_ +
+                            '<span class="status fr">'+ orderStatus(o.creditStauts).msg +'</span>'+
+                            '</h3>'+
+                            '<ul class="order-item-info" data-porderno="'+ o.orderNo +'">'+
+                            '<li><span>订单总价：</span><em>¥<i>'+ formatMoney(o.totalamount) +'</i></em></li>'+
+                            '<li><span>分期期数：</span><em><i>'+ o.periods +'</i>期</em></li>'+
+                            '<li><span>申请时间：</span><em><i>'+ formatDate(o.createTime.time,"yyyy/MM/dd") +'</i></em></li>'+
+                            '</ul>'+
+                            '<div class="order-item-status">'+
+                            orderStatus(o.creditStauts).a+
+                            //'<a href="#">去松鼠贷APP补充资料</a>'+
+                            '</div>'+
+                            '</div>'+
+                            '</li>';
+                }).join("");
+                $("#orderList").html(html);
+            }
+            loader.hideL();
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            loader.hideL();
+        }
+    });
+}
+//获取订购买的产品list
+$(document).on("click",".order-item-info",function(){
+    var orderNo = $(this).data("porderno");
+    $.ajax({
+        type: "get",
+        dataType: "json",
+        url: apiPath + "beautiful/orderitemInfo?t=" + (+new Date()),
+        data: {orderNo: orderNo},
+        beforeSend: function (XMLHttpRequest) {
+            loader.showL();
+        },
+        success: function (d) {
+            if(d.errorCode==0){
+                var data = d.data.orderItemList;
+                var html = $.map(data,function(o,i){
+                    return '<tr><td>'+ o.productname +'</td><td>¥'+ o.price +'</td><td>'+ o.productCount +'</td></tr>';
+                }).join("");
+                $("#orderProductList").html(html);
+                meba.addClass("active");
+                ppd.show();
+            }
+            loader.hideL();
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            loader.hideL();
+        }
+    });
+
+});
+
+</script>
+</html>

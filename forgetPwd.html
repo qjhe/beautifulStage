@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta name="apple-wap-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+	<link rel="stylesheet" type="text/css" href="css/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="css/base.css"/>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	<script src="js/base.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	    remFn(10);
+	</script>
+</head>
+<body class="bodyNobg">
+	<div class="commWidth">
+		<header class="headerBg">
+			<a href="javascript:history.go(-1);"></a>
+		    <div class="left"><i class="icon-keyboard_arrow_left"></i></div>
+		    <div class="title">忘记密码</div>
+		</header>
+		<div class="beauWrap">
+			<ul class="bs-info-rg">
+				<li class="bs-inpt">
+					<span class="icon-phone-num"></span>
+					<input type="tel" name="" id="telNum" value="" placeholder="请输入手机号码" maxlength="11" max="11" readonly="readonly"/>
+				</li>
+				<li class="bs-inpt bs-vcode">
+					<span class="icon-ver-code col6"></span>
+					<input type="tel" name="" id="code" value="" placeholder="请输入验证码" max="6" maxlength="6" autocomplete="off"/>
+					<span class="getVcodeBtn" id="getVcodeBtn">获取验证码</span>
+				</li>
+				<li class="bs-inpt bs-lgpwd">
+					<span class="icon-pwd col6"></span>
+					<input type="password" name="" id="nlgPwd" value="" placeholder="请输入新登录密码" style="width: 6.5rem;" autocomplete="off"/>
+				</li>
+				<li class="bs-regLi"><a href="javascript:;" class="Bs-Btn gray">提交</a></li>
+				<!--bs-gray-->
+			</ul>
+			<div class="spay-msg-box"></div>
+			<input type="hidden" name="tocken" id="tocken" value="" />
+		</div>
+	</div>
+	<script src="js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/ssValidate.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jQuery.md5.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var stimer=null;
+		var timerMsg = null;
+		var iSec = 60;
+		var _v = new mValidate();
+		var $telNum=$("#telNum"),
+			$code = $("#code"),
+			$nlgPwd=$("#nlgPwd"),
+			$getVcodeBtn=$("#getVcodeBtn"),
+			$bsBtn=$(".Bs-Btn");
+			loader.init();
+		var getPhone=getURLQueryString("phoneNum");
+		getToken();
+		$telNum.val(getPhone);
+		$nlgPwd.on("input blur",function(){
+			highBtnFun();
+			var newV=$(this).val().replace(/[^a-zA-Z0-9\-]$/,"");
+			$(this).val(newV)
+		});
+		$code.on("input blur",highBtnFun)
+		$getVcodeBtn.on("click",getVecod);
+		function getToken(){
+			var data={
+				height:"568",
+				signature:"54cd7e7c054ddfbfee9f267a5f721f749f8e5d63",
+				source:"mobile",
+				system:"iOS10.0.2",
+				verifycode:"019408",
+				usename:getPhone,
+				timestamp:"1484298312",
+				version:"1.0.5",
+				width:"320"
+			};
+			$.ajax({
+				type:"POST",
+				url: apiPath+"accesstoken?t=" + (+new Date()),
+				data:data,
+				beforeSend:function(){
+					loader.showL();
+				},
+				success:function(data) {
+					if(data.errorCode==0){
+						$("#tocken").val(data.data);
+					}
+					loader.hideL();
+				},
+				error: function(d){
+					spayErrorMsg(stimer,"网络错误",2000);
+					loader.hideL();
+				}
+			});
+		}
+		function highBtnFun(){
+			if($nlgPwd.val()!=""&&$code.val()!=""){
+				$bsBtn.removeClass("gray").off("click").on("click",nextFun);
+			}else{
+				$bsBtn.addClass("gray").off("click");
+			}
+		}
+		function nextFun(){
+	       if(validFun()){
+	           submitFun();
+	       }
+	     }
+	    //验证
+	    function validFun(){
+			if(!_v.isSMCode($code.val())){
+				spayErrorMsg(stimer,"验证码格式不对");
+				return false;
+			}
+			if(!_v.vPwd($nlgPwd.val())){
+				spayErrorMsg(stimer,"密码格式不对");
+				return false;
+			}
+			return true;
+		}
+	    function getVecod(){
+			$getVcodeBtn.off("click");
+	    	var data={
+				mobile:$telNum.val(),
+				accesstoken:$("#tocken").val(),
+				type:"1",
+				business:"forgotPassword"
+			}
+			$.ajax({
+				type:"POST",
+				url: "https://app.jianguodai.com/appBeCalled/getVerifyCode?t="+ (+new Date()),
+				data:data,
+				beforeSend:function(){
+					loader.showL();
+				},
+				success:function(data) {
+
+					if(data.errorCode==0){
+						clearInterval(timerMsg);iSec = 60;
+						$getVcodeBtn.addClass("gray").html("重新获取"+iSec);
+						timerMsg = setInterval(function(){
+							if(iSec<=1){
+								clearInterval(timerMsg);iSec = 60;
+								$getVcodeBtn.on("click",getVecod).removeClass("gray").html("重新获取");
+							}else{
+								iSec--;
+								$getVcodeBtn.html("重新获取"+iSec);
+							}
+						},1000);
+					}else{
+						spayErrorMsg(stimer,"短信验证码发送失败",1500);
+					}
+					loader.hideL();
+				},
+				error: function(d){
+					spayErrorMsg(stimer,"网络错误",2000);
+					loader.hideL();
+				}
+			});
+		}
+	    function submitFun(){
+			var data={
+				accesstoken:$("#tocken").val(),
+				username:$telNum.val(),
+				password:$.md5($nlgPwd.val()),
+				verifycode:$code.val()
+			}
+	        $.ajax({
+	            type:"POST",
+	            url: "https://app.jianguodai.com/appBeCalled/forgetPassword?t=" + (+new Date()),
+	            data:data,
+	            beforeSend:function(){
+	                loader.showL();
+	            },
+	            success:function(data) {
+	                if(data.errorCode == 0) {
+	                	spayErrorMsg(stimer,"新密码设置成功",1500);
+	                    window.setTimeout(function(){
+	                        location.href = "login2.html?phoneNum="+getPhone;
+	                    },1500);
+	                } else {
+	                        spayErrorMsg(stimer,data.errorMessage,2000);
+	                }
+	                loader.hideL();
+	            },
+	            error: function(d){
+	            	spayErrorMsg(stimer,"网络错误",2000);
+	            	loader.hideL();
+	            }
+	        });
+	    }
+	</script>
+</body>
+</html>

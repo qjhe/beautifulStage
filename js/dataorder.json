@@ -1,0 +1,80 @@
+[
+  {
+    "status": 1,
+      "contractNumber" : "123456789",
+      "totalPrice": "100000.00",
+      "periods":"3",
+      "date":"2017-1-17 14:14:15",
+      "productList": [
+      {
+        "productname": "瘦脸针1号",
+        "price": 290,
+        "sellCount": 1
+      },
+      {
+        "productname": "瘦脸针2号",
+        "price": 1888,
+        "sellCount": 12
+      },
+      {
+        "productname": "瘦脸针3号",
+        "price": 666,
+        "sellCount": 8
+      },
+      {
+        "productname": "瘦脸针4号",
+        "price": 8888,
+        "sellCount": 6
+      },
+      {
+        "productname": "瘦脸针5号",
+        "price": 560,
+        "sellCount": 4
+      },
+      {
+        "productname": "瘦脸针6号",
+        "price": 899,
+        "sellCount": 1
+      }
+    ]
+  },
+  {
+    "status": 1,
+    "contractNumber" : "123456789",
+    "totalPrice": "100000.00",
+    "periods":"3",
+    "date":"2017-1-17 14:14:15",
+    "productList": [
+      {
+        "productname": "瘦脸针1号",
+        "price": 290,
+        "sellCount": 1
+      },
+      {
+        "productname": "瘦脸针2号",
+        "price": 1888,
+        "sellCount": 12
+      },
+      {
+        "productname": "瘦脸针3号",
+        "price": 666,
+        "sellCount": 8
+      },
+      {
+        "productname": "瘦脸针4号",
+        "price": 8888,
+        "sellCount": 6
+      },
+      {
+        "productname": "瘦脸针5号",
+        "price": 560,
+        "sellCount": 4
+      },
+      {
+        "productname": "瘦脸针6号",
+        "price": 899,
+        "sellCount": 1
+      }
+    ]
+  }
+]

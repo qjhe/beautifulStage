@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>商品列表</title>
+    <link rel="stylesheet" href="js/bone/mobilebone.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/icon.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="js/bone/mobilebone.animate.css">
+<script src="js/base.js"></script>
+<script type="text/javascript">
+    remFn(10);
+</script>
+</head>
+<body>
+<div id="productList" class="page out">
+    <header>
+        <div class="left"><i class=""></i></div>
+        <div class="title toe"></div>
+        <div class="right"><a href="javascript:location.href = urlPath + 'accountCenter.html'">&nbsp;</a><i class="icon-user-center"></i></div>
+    </header>
+    <section class="user-ico">
+        <div class="user-wrapper">
+            <div>
+                <i class="icon-portrait"></i>
+            </div>
+        </div>
+        <h3>美丽分期</h3>
+    </section>
+    <section class="product-list">
+        <ul id="productCon">
+            <!--<li>-->
+            <!--<div class="product-item">-->
+            <!--<div class="text">瘦脸针</div>-->
+            <!--<div class="price">¥3000</div>-->
+            <!--<div class="cart-operation">-->
+            <!--<div class="cart-reduce"><i class="icon-remove_circle_outline"></i></div>-->
+            <!--<div class="cart-num">0</div>-->
+            <!--<div class="cart-increase"><i class="icon-add_circle"></i></div>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</li>-->
+        </ul>
+    </section>
+    <div style="height: 1.25rem;"></div>
+    <section class="footer-cart cart-w0">
+        <div class="cart-list">
+            <div class="cart-list-head">
+                <div class="text fl">已选项目</div>
+                <div class="clear fr"><i class="icon-del"></i></div>
+            </div>
+            <ul>
+                <!--<li>-->
+                <!--<div class="product-item">-->
+                <!--<div class="text">瘦脸针</div>-->
+                <!--<div class="price">¥3000</div>-->
+                <!--<div class="cart-operation">-->
+                <!--<div class="cart-reduce"><i class="icon-remove_circle_outline"></i></div>-->
+                <!--<div class="cart-num">0</div>-->
+                <!--<div class="cart-increase"><i class="icon-add_circle"></i></div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</li>-->
+            </ul>
+        </div>
+        <div class="cart-info">
+            <div class="cart-w" id="shopCart">
+                <div class="ico"><i class="icon-shopping_cart"></i></div>
+                <span class="num">0</span>
+            </div>
+            <div class="cart-info-d">
+                <div>
+                    <div class="price">订单总价 ¥<i>0</i></div>
+                    <div class="fq-info">可分3/6/10期支付</div>
+                </div>
+                <div>还未选择任何商品</div>
+            </div>
+        </div>
+        <div id="saveOrder" class="go-buy"><a href="javascript:;">&nbsp;</a>确认订单</div>
+    </section>
+    <div id="meba1" class="meba"></div>
+</div>
+<div id="productStage" class="page out" style="background: #fff">
+    <div class="commWidth">
+        <header class="headerBg">
+            <div class="left"><a href="#productList" data-rel="back">&nbsp;</a><i class="icon-keyboard_arrow_left"></i></div>
+            <div class="title">美丽分期</div>
+        </header>
+        <div class="beauWrap">
+            <ul class="bs-infolist bs-beatiStage">
+                <li class="bs-infoItem clearFiex">
+                    <span class="bs-info-tit">付款金额</span>
+                    <span class="stageNum">¥<em class="price"><i></i></em></span>
+                </li>
+                <li class="bs-infoItem clearFiex bs-info-stage">
+                    <span class="bs-info-tit">请选择分期</span>
+                    <div class="stageWrap clearFiex">
+                        <div class="stageItem fl active">
+                            <h3>3期</h3>
+                            <p>每期<span class="stages"></span>元</p>
+                        </div>
+                        <div class="stageItem fl">
+                            <h3>6期</h3>
+                            <p>每期<span class="stages"></span>元</p>
+                        </div>
+                        <div class="stageItem fl" style="margin: 0">
+                            <h3>10期</h3>
+                            <p>每期<span class="stages"></span>元</p>
+                        </div>
+                    </div>
+                </li>
+                <li  class="bs-regLi">
+                    <a id="saveStages" href="javascript:;" class="Bs-Btn">确认分期支付</a>
+                    <p>分期服务由松鼠信贷提供</p>
+                </li>
+            </ul>
+            <div class="spay-msg-box"></div>
+        </div>
+    </div>
+    <div class="prompBox">
+        <h2>提示</h2>
+        <p>您有一笔未完成的订单，暂无法申请分期</p>
+        <p class="btns">
+            <a href="javascipt:;">我知道了</a>
+            <a href="javascript:location.href = urlPath + 'accountCenter.html'" class="active">去看看</a>
+        </p>
+    </div>
+    <div id="meba2" class="meba"></div>
+</div>
+</body>
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/bone/mobilebone.js"></script>
+<script>
+    var domShopCart = $('#shopCart');
+    var productJson = [];
+    var stagesNum = 3;
+    loader.init();
+    getData();
+    function getData(){
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url: apiPath + "appBeCalled/findAllProducts?t=" + (+new Date()),
+            data: {"pageNo": 1, "pageSize": 200},
+            beforeSend: function (XMLHttpRequest) {
+                loader.showL();
+            },
+            success: function (data) {
+                var goods = data.data;
+                var html_ = $.map(goods,function(o,i){
+                    productJson.push(o);
+                    return '<li>'+
+                            '<div class="product-item">'+
+                            '<div class="text">'+ o.productname +'</div>'+
+                            '<div class="price">¥'+ o.price +'</div>'+
+                            '<div class="cart-operation">'+
+                            '<div class="cart-reduce" name="op'+ i +'" data-pindex="'+ i +'" style="display: ;"><i class="icon-remove_circle_outline"></i></div>'+
+                            '<div class="cart-num"><span class="num-i" name="op'+ i +'" style="display: none;">0</span></div>'+
+                            '<div class="cart-increase" name="op'+ i +'" data-pindex="'+ i +'"><i class="icon-add_circle"></i></div>'+
+                            '</div>'+
+                            '</div>'+
+                            '</li>';
+                }).join("");
+                $("#productCon").append(html_);
+                cartStatus.INIT();
+                bindEvent();
+                loader.hideL();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                loader.hideL();
+            }
+        })
+    }
+    bindEvent();
+
+    function bindEvent(){
+        $(".cart-increase").on("click",function(){
+            var __this = $(this);
+            var nStartX = __this.offset().left,
+                    nStartY = __this.offset().top,
+                    nEndX = domShopCart.offset().left + domShopCart[0].offsetWidth/2,
+                    nEndY = domShopCart.offset().top,
+                    nTopX = nEndX - 10,
+                    nTopY = nEndY - 8;
+            var x = nStartX,y = nStartY;
+            //新建一个内容
+            var domGood = document.createElement('div');
+            domGood.style.width = '0.28rem';
+            domGood.style.height = '0.28rem';
+            domGood.style.background = '#75d8bc';
+            domGood.style.borderRadius = '50%';
+            domGood.style.position = 'absolute';
+            domGood.style.left = nStartX + 'px';
+            domGood.style.top = nStartY + 'px';
+            domGood.style.zIndex = "51";
+            document.body.appendChild(domGood);
+
+            var a = -((nStartY - nEndY) * (nStartX - nTopX) - (nStartY - nTopY) * (nStartX - nEndX)) / ((nStartX * nStartX - nEndX * nEndX) * (nStartX - nTopX) - (nStartX * nStartX - nTopX * nTopX) * (nStartX - nEndX));
+            var b = ((nEndY - nStartY) - a * (nEndX * nEndX - nStartX * nStartX)) / (nEndX - nStartX);
+            var c = nStartY - a * nStartX * nStartX - b * nStartX;
+            var timer = setInterval(function () {
+                /*y = a * x*x + b*x +c;*/
+                if (x > nEndX) {
+                    x = x - 10;
+                    y = a * x * x + b * x + c;
+                    domGood.style.left = x + 'px';
+                    domGood.style.top = y + 'px';
+                }else {
+                    domGood.parentNode.removeChild(domGood);
+                    clearInterval(timer);
+                    domShopCart.css({"transform":"scale(1.2)"});
+                    setTimeout(function(){
+                        domShopCart.css({"transform":"scale(1)"});
+                    },100)
+                }
+            }, 20);
+
+        });
+    }
+
+//计算&状态显示 productJson
+var cartStatus = {
+    CART : null,
+    CART_LIST : null,
+    CART_BOX : null,
+    REDUCE : null,
+    NUM : null,
+    NUM_I : null,
+    INCREASE : null,
+    CLEAR : null,
+    SAVE_ORDER : null,
+    MEBA :null,
+    PRICE : null,
+    PRICE_DOM : null,
+    STAGES : null,
+    TOTAL_NUM : 0,
+    INIT : function(){
+        var __this = this;
+        __this.INIT_DOM();
+        $(productJson).each(function(i,o){
+            __this.TOTAL_NUM += o.sellCount;
+            __this.PRICE += o.price*o.sellCount;
+        });
+        __this.PRICE_DOM.html(__this.PRICE);
+        __this.EVENTS();
+        __this.TOTAL(__this.TOTAL_NUM);
+    },
+    INIT_DOM : function(){
+        var __this = this;
+        __this.CART = $(".footer-cart");
+        __this.CART_LIST = $(".cart-list");
+        __this.CART_BOX = $(".cart-info");
+        __this.MEBA = $("#meba1");
+        __this.REDUCE = $(".cart-reduce");
+        __this.NUM = $(".num");
+        __this.NUM_I = $(".num-i");
+        __this.INCREASE = $(".cart-increase");
+        __this.PRICE_DOM = $(".price i");
+        __this.CLEAR = $(".clear");
+        __this.SAVE_ORDER = $("#saveOrder");
+        __this.STAGES = $(".stages");
+    },
+    EVENTS : function(){
+        var __this = this;
+        //价格为0
+        __this.REDUCE.off("click").on("click",function(){
+            var $this =$(this);
+            var __index = $this.data("pindex");
+            if(productJson[__index].sellCount>0){
+                productJson[__index].sellCount--;
+            }
+            if(productJson[__index].sellCount == 0){
+//                __this.REDUCE.eq(__index).removeClass("active");
+//                __this.NUM_I.eq(__index).hide();
+                $("#li"+__index).remove();//移除购物车已选商品 li
+                $("div.cart-reduce[name=op" + __index + "]").removeClass("active");
+                $("span.num-i[name=op" + __index + "]").hide();
+            }
+//            __this.NUM_I.eq(__index).html(productJson[__index].sellCount);
+            $("span.num-i[name=op" + __index + "]").html(productJson[__index].sellCount);
+            __this.TOTAL_NUM--;
+            __this.TOTAL(__this.TOTAL_NUM);
+            //计算总价
+            __this.PRICE -= productJson[__index].price;
+            __this.PRICE_DOM.html(__this.PRICE);
+        });
+        __this.INCREASE.off("click").on("click",function(){
+            var __index = $(this).data("pindex");
+            productJson[__index].sellCount++;
+            if(productJson[__index].sellCount==1) {
+//                __this.REDUCE.eq(__index).addClass("active");
+//                __this.NUM_I.eq(__index).show();
+                $("div.cart-reduce[name=op" + __index + "]").addClass("active");
+                $("span.num-i[name=op" + __index + "]").show();
+            };
+//            __this.NUM_I.eq(__index).html(productJson[__index].sellCount);
+            $("span.num-i[name=op" + __index + "]").html(productJson[__index].sellCount);
+            __this.TOTAL_NUM++;
+            __this.TOTAL(__this.TOTAL_NUM);
+            //计算总价
+            __this.PRICE += productJson[__index].price;
+            __this.PRICE_DOM.html(__this.PRICE);
+        });
+        __this.CART_BOX.off("click").on("click",function(){
+            __this.HIDE_CART();
+        });
+        __this.CLEAR.off("click").on("click",function(){
+            if(confirm("清空购物车？")){
+                __this.REDUCE.removeClass("active");
+                __this.NUM_I.html("0").hide();
+                $(productJson).each(function(i,o){
+                    o.sellCount = 0;
+                });
+                __this.TOTAL_NUM = 0;
+                __this.PRICE = 0;
+                __this.TOTAL(__this.TOTAL_NUM);
+                __this.HIDE_CART();
+                localStorage.orderList = "";
+            }
+        });
+        __this.SAVE_ORDER.off("click").on("click",function(){
+            __this.STAGES_PRICE();
+            if (__this.TOTAL_NUM > 0) {
+                var nJson = [];
+                $(productJson).each(function (i, o) {
+                    if (o.sellCount > 0) nJson.push(o);
+                });
+                //保存订单
+                localStorage.orderList = JSON.stringify(nJson);
+            }
+        });
+    },
+    TOTAL : function(num){
+        var __this = this;
+        __this.NUM.html(num);
+        if(num==0){
+            __this.SAVE_ORDER.find("a").attr("href","javascript:;");
+            __this.CART.addClass("cart-w0");
+            __this.HIDE_CART();
+        }
+        if(num==1){
+            __this.SAVE_ORDER.find("a").attr("href","#productStage");
+            __this.CART.removeClass("cart-w0");
+        }
+    },
+    CART_HTML: function(data,callback){//加载购物车数据
+        var __this = this;
+        var __html = $.map(data,function(o,i){
+            if(o.sellCount>0){
+                return '<li id="li'+ i +'">'+
+                        '<div class="product-item">'+
+                        '<div class="text">'+ o.productname +'</div>'+
+                        '<div class="price">¥'+ o.price +'</div>'+
+                        '<div class="cart-operation">'+
+                        '<div class="cart-reduce active" name="op'+ i +'" data-pindex="'+ i +'"><i class="icon-remove_circle_outline"></i></div>'+
+                        '<div class="cart-num"><span name="op'+ i +'" class="num-i" style="display: ;">'+ o.sellCount +'</span></div>'+
+                        '<div class="cart-increase" name="op'+ i +'" data-pindex="'+ i +'"><i class="icon-add_circle"></i></div>'+
+                        '</div>'+
+                        '</div>'+
+                        '</li>';
+            }
+        }).join("");
+        __this.CART_LIST.find("ul").html(__html);
+        __this.INIT_DOM();
+        __this.EVENTS();
+        bindEvent();
+        callback&callback();
+    },
+    HIDE_CART : function(){
+        var __this = this;
+        if(__this.TOTAL_NUM>0){
+            if(__this.CART_LIST.hasClass("active")){
+                __this.CART_LIST.removeClass("active");
+                __this.MEBA.removeClass("active");
+                $(".page").removeClass("scroll-no");
+            }else{
+                __this.CART_HTML(productJson,function(){
+                    __this.CART_LIST.addClass("active");
+                    __this.MEBA.addClass("active");
+                    $(".page").addClass("scroll-no");
+                });
+            }
+        }else{
+            __this.CART_LIST.removeClass("active");
+            __this.MEBA.removeClass("active");
+            $(".page").removeClass("scroll-no");
+        }
+    },
+    STAGES_PRICE : function(){
+        var __this = this;
+        __this.STAGES.eq(0).html((__this.PRICE/3).toFixed(2));
+        __this.STAGES.eq(1).html((__this.PRICE/6).toFixed(2));
+        __this.STAGES.eq(2).html((__this.PRICE/10).toFixed(2));
+    }
+}
+
+prompBox.init(function(){},function(){});
+
+//选择分期
+localStorage.stagesNum = stagesNum+"";
+
+var stageArray = [3, 6, 10];
+var $stage = $(".stageWrap > div");
+$stage.each(function(i,o){
+    var __this = $(this);
+    __this.click(function(){
+        $stage.removeClass("active");
+        __this.addClass("active");
+        stagesNum = stageArray[__this.index()];
+        localStorage.stagesNum = stagesNum;
+    });
+});
+
+var $saveStages = $("#saveStages");
+$saveStages.on("click",function(){
+    var selectProduct = JSON.parse(localStorage.orderList),selectNum = localStorage.stagesNum;
+    var __obj = {
+        "periods":selectNum,
+        "productList":selectProduct
+    }
+    __obj = JSON.stringify(__obj);
+    //$ajax save order
+    $.ajax({
+        type: "post",
+        dataType: "json",
+        url: apiPath + "beautiful/confirmInstalment?t=" + (+new Date()),
+        data: {instalment: __obj},
+        beforeSend: function (XMLHttpRequest) {
+            loader.showL();
+        },
+        success: function (d) {
+            if(d.isJump==1){
+                location.href = "login.html";
+                return false;
+            }
+            localStorage.orderList = "";
+            localStorage.stagesNum = "";
+            if(d.errorCode==0){
+                var status_ = d.data.status;
+                if(status_==0){
+                    location.href = "login.html";
+                }else if(status_==1){
+                    //alert("已登录未信审")
+                    location.href = "creditInfo.html";
+                }else if(status_==2){
+                    //alert("已登录已信审")
+                    location.href = location.href = urlPath + 'auditStatus.html';//"personCenter.html";
+                }else if(status_==3){
+                    prompBox.showL();//有未完成的订单
+                }
+            }else{
+                spayErrorMsg(stimer, d.errorMessage,2000);
+            }
+            loader.hideL();
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            loader.hideL();
+        }
+    });
+});
+
+location.href = "#&productList";
+</script>
+</html>

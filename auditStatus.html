@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta name="apple-wap-web-app-capable" content="yes">
+	<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+	<meta name="format-detection" content="telephone=no"/>
+	<link rel="stylesheet" type="text/css" href="css/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="css/base.css"/>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	<script src="js/base.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	    remFn(10);
+	</script>
+</head>
+<body style="background: #fff;">
+	<div class="commWidth">
+		<div class="beauWrap">
+			<header style="position: fixed;top: 0;">
+			    <div class="left"><a href="javascript:location.href = urlPath + 'accountCenter.html'">&nbsp;</a><i class="icon-keyboard_arrow_left"></i></div>
+			</header>
+			<!--审核中-->
+			<div class="audiBox">
+				<div class="audiBg"><img src="images/auditBg1.png"/></div>
+				<div class="audiCon">
+					<h3>订单正在审核中</h3>
+					<h2>00:00:00</h2>
+				</div>
+			</div>
+			<!--审核中-->
+			<!--审核成功-->
+			<div class="audiBox"  style="display: none;">
+				<div class="audiBg"><img src="images/auditBg4.png"/></div>
+				<div class="audiCon">
+					<h3>订单已通过审核！</h3>
+					<p class="textLeft">请点击下方按钮下载松鼠贷APP，登陆后按提示在线签署合同。</p>
+					<img src="images/auditLine.png" class="linePic"/>
+					<p>用美丽分期注册手机号及密码可直接登录</p>
+					<a href="javascript:;" class="downBtn green">一键下载松鼠贷APP</a>
+					<p>客服电话：<a class="phoneNum" href="tel:400-010-5577">400-010-5577</a></p>
+				</div>
+			</div>
+			<!--审核成功-->
+			<!--暂未通过-->
+			<div class="audiBox"  style="display: none;">
+				<div class="audiBg"><img src="images/auditBg3.png"/></div>
+				<div class="audiCon">
+					<h3>订单暂未通过审核！</h3>
+					<p class="textLeft">您提交的资料暂不符合此次美丽分期审核标准，您可以下载松鼠贷APP补充信用资料。</p>
+					<img src="images/auditLine.png" class="linePic"/>
+					<p>用美丽分期注册手机号及密码可直接登录</p>
+					<a href="javascript:;" class="downBtn org">一键下载松鼠贷APP</a>
+					<p>客服电话：<a class="phoneNum" href="tel:400-010-5577">400-010-5577</a></p>
+				</div>
+			</div>
+			<!--暂未通过-->
+			<!--未通过-->
+			<div class="audiBox"  style="display: none;">
+				<div class="audiBg"><img src="images/auditBg2.png"/></div>
+				<div class="audiCon">
+					<h3>订单未通过审核！</h3>
+					<p>您提交的信用资料不符合美丽分期审核标准感谢您关注美丽分期</p>
+				</div>
+			</div>
+			<!--未通过-->
+		</div>
+	</div>
+	<script src="js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/ssValidate.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		//获取5-10随机数
+		var iNum = parseInt(Math.random(1)*10);
+		iNum = iNum<=5 ? iNum+5 : iNum;
+
+		var $audiBox = $(".audiBox");
+		var timeIndex = 0;
+		setInterval(setTime, 1000);
+		function setTime(){
+			var hour = parseInt(timeIndex / 3600);
+			var minutes = parseInt((timeIndex % 3600) / 60);
+			var seconds = parseInt(timeIndex % 60);
+			hour = hour < 10 ? "0" + hour : hour;
+			minutes = minutes < 10 ? "0" + minutes : minutes;
+			seconds = seconds < 10 ? "0" + seconds : seconds;
+			$(".audiCon h2").html("<em>"+hour+"</em>:"+"<em>"+minutes+"</em>:"+"<em>"+seconds+"</em>")
+			if(timeIndex==iNum){
+				$audiBox.hide();
+				$audiBox.eq(1).show();
+			}
+			timeIndex++;
+		}
+	</script>
+</body>
+</html>

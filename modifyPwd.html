@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>修改密码</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta name="apple-wap-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+	<link rel="stylesheet" type="text/css" href="css/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="css/base.css"/>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	<script src="js/base.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	    remFn(10);
+	</script>
+</head>
+<body class="bodyNobg">
+	<div class="commWidth">
+		<header class="headerBg">
+			<a href="javascript:history.go(-1)"></a>
+		    <div class="left"><i class="icon-keyboard_arrow_left"></i></div>
+		    <div class="title">修改密码</div>
+		</header>
+		<div class="beauWrap">
+			<ul class="bs-info-rg">
+				<li class="bs-inpt bs-lgpwd">
+					<input type="password" name="" id="oldPwd" value="" placeholder="请输入旧登录密码" style="width: 6.5rem;" autocomplete="off"/>
+				</li>
+				<li class="bs-inpt bs-lgpwd">
+					<input type="password" name="" id="nPwd" value="" placeholder="请输入新登录密码" style="width: 6.5rem;" autocomplete="off"/>
+				</li>
+				<li class="bs-inpt bs-lgpwd">
+					<input type="password" name="" id="nPwd2" value="" placeholder="请再次输入新登录密码" style="width: 6.5rem;" autocomplete="off"/>
+				</li>
+				<li class="bs-regLi"><a href="javascript:;" class="Bs-Btn gray">确定</a></li>
+				<!--bs-gray-->
+			</ul>
+			<input type="hidden" name="phoneNum" id="phoneNum" value="18510630130" />
+			<input type="hidden" name="tocken" id="tocken" value="" />
+			<div class="spay-msg-box"></div>
+		</div>
+	</div>
+	<script src="js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/ssValidate.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jQuery.md5.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var getPhone=getURLQueryString("getPhone");
+		$("#phoneNum").val(getPhone);
+		loader.init();
+		var $oldPwd=$("#oldPwd"),$nPwd=$("#nPwd"),$nPwd2=$("#nPwd2"),$BsBtn=$(".Bs-Btn");
+		var _v = new mValidate();
+		var stimer = null;
+		/*if(localStorage&&localStorage.tocken){
+			$('#tocken').val(localStorage.tocken);
+		}else{
+			location.href="login.html"
+		}*/
+		/*获取新tocken*/
+		//getNewtocken();
+		$(document).on("input blur","#oldPwd,#nPwd,#nPwd2",function(){
+			highBtnFun();
+			var newV=$(this).val().replace(/[^a-zA-Z0-9\-]$/,"");
+			$(this).val(newV)
+		})
+
+
+		/*重置密码提交*/
+		function regFun(){
+	       if(validFun()){
+			   resetPwd();
+	       }
+	    }
+	    //重置密码验证
+	    function validFun(){
+			if(!_v.vPwd($oldPwd.val())){
+				spayErrorMsg(stimer,"密码格式不对");
+				return false;
+			}
+			if(!_v.vPwd($nPwd.val())){
+				spayErrorMsg(stimer,"密码格式不对");
+				return false;
+			}
+			if(!_v.vPwd($nPwd2.val())){
+				spayErrorMsg(stimer,"密码格式不对");
+				return false;
+			}
+
+			if($oldPwd.val()==$nPwd.val()){
+				spayErrorMsg(stimer,"新密码和旧密码重复");
+				return false;
+			}else if($nPwd.val()!=$nPwd2.val()){
+				spayErrorMsg(stimer,"两次输入不一致");
+				return false;
+			}
+
+			return true;
+		}
+		/*获取新的tocken值*/
+		function getNewtocken(){
+			$.ajax({
+				type:"POST",
+				url: "https://app.jianguodai.com/appBeCalled/getToken?t=" + (+new Date()),
+				data:{accesstoken:$('#tocken').val()},
+				beforeSend:function(){},
+				success:function(data) {
+					var result=data.data;
+					if(data.errorCode==0){
+						if(result.accessToken==$("#tocken").val()){
+							return false;
+						}else{
+							localStorage.tocken=result.accessToken;
+							$('#tocken').val(localStorage.tocken);
+						}
+					}
+				},
+				error: function(d){
+					spayErrorMsg(stimer,"网络错误",2000);
+					loader.hideL();
+				}
+			});
+		}
+		//重置密码
+	    function resetPwd(){
+			var data={
+				oldpassword: $.md5($("#oldPwd").val()),
+				newpassword: $.md5($("#nPwd").val()),
+				username:$("#phoneNum").val()
+			};
+	        $.ajax({
+	            type:"POST",
+	            url: "https://app.jianguodai.com/appBeCalled/resetPassword?t=" + (+new Date()),
+	            data:data,
+	            beforeSend:function(){
+	                loader.showL();
+	            },
+	            success:function(data) {
+	                if(data.errorCode == 0) {
+	                	spayErrorMsg(stimer,"修改成功",1500);
+	                    /*window.setTimeout(function(){
+	                        location.href = "http://app.squcorp.com/static/squcorp/download/6.html";
+	                    },1500);*/
+	                } else {
+	                        spayErrorMsg(stimer,data.errorMessage,2000);
+	                }
+	                loader.hideL();
+	            },
+	            error: function(d){
+	            	spayErrorMsg(stimer,"网络错误",2000);
+	            	loader.hideL();
+	            }
+	        });
+	    }
+		function highBtnFun(){
+			if($oldPwd.val()!=""&&$nPwd.val()!=""&&$nPwd2.val()!=""){
+				$BsBtn.removeClass("gray").off("click").on("click",regFun);
+			}else{
+				$BsBtn.addClass("gray").off("click");
+			}
+		}
+	</script>
+</body>
+</html>

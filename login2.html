@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta name="apple-wap-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+	<link rel="stylesheet" type="text/css" href="css/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="css/base.css"/>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	<script src="js/base.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	    remFn(10);
+	</script>
+</head>
+<body>
+	<div class="commWidth">
+		<div class="beauWrap">
+			<header>
+				<a href="javascript:history.go(-1);"></a>
+			    <div class="left"><i class="icon-keyboard_arrow_left"></i></div>
+			</header>
+			<div class="bs-logo"></div>
+			<ul class="bs-info">
+				<li class="bs-telNum"></li>
+				<li class="bs-inpt bs-lgpwd">
+					<span class="icon-pwd"></span>
+					<input type="password" name="" id="lgPwd" value="" placeholder="请输入登录密码" max="18" maxlength="18"/>
+					<span class="icon-eye-close" id="pwdShowBtn"><!--icon-eye-open--></span>
+				</li>
+				<li><a href="javascript:;" class="Bs-Btn bs-gray" id="loginBtn">登录</a></li>
+				<li><a href="javascript:;" class="bs-forgetPwd" id="forgetPwd">忘记密码？</a></li>
+				<!--bs-gray-->
+			</ul>
+			<div class="spay-msg-box"></div>
+			<input type="hidden" name="tocken" id="tocken" value="" />
+		</div>
+	</div>
+	<div class="prompBox">
+		<h2>提示</h2>
+		<p>您有一笔未完成的订单，暂无法申请分期</p>
+		<p class="btns">
+			<a href="javascipt:;">我知道了</a>
+			<a href="personCenter.html" class="active">去看看</a>
+		</p>
+	</div>
+	<div id="meba2" class="meba"></div>
+	<script src="js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/ssValidate.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jQuery.md5.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var stimer=null;
+		var getPhone=getURLQueryString("phoneNum");
+		var lastPhone=getPhone.substr(0,3)+" "+getPhone.substr(3,4)+" "+getPhone.substr(7,4);
+		$("#forgetPwd").attr("href","forgetPwd.html?phoneNum="+getPhone)
+		$(".bs-telNum").html(lastPhone);
+		var $lgPwd=$("#lgPwd"),$loginBtn=$("#loginBtn");
+		loader.init();
+		var _v=new mValidate();
+		/*密码是否显示*/
+		$("#pwdShowBtn").on("click",function(){
+			var _this=$(this);
+			if(_this.hasClass("icon-eye-open")){
+				_this.removeClass("icon-eye-open");
+				_this.siblings("#lgPwd").attr("type","password");
+			}else{
+				_this.addClass("icon-eye-open");
+				_this.siblings("#lgPwd").attr("type","text");
+			}
+		})
+		
+		
+		$loginBtn.off("click");
+		$lgPwd.on("focusin",highNextbtn)
+		$lgPwd.on("input blur",function(){
+			var newV=$(this).val().replace(/[^a-zA-Z0-9\-]$/,"");
+			$(this).val(newV)
+		})
+		function highNextbtn(){
+			if($loginBtn.hasClass("bs-gray")){
+				$loginBtn.removeClass("bs-gray").off("click").on("click",nextFun)
+			}
+		}
+		
+		function nextFun(){
+			if(validFun()){
+				loginFun()
+			}
+		}
+		function validFun(){
+			if(!_v.isEmpty($lgPwd.val())){
+				spayErrorMsg(stimer,"密码不能为空");
+				return false;
+			}
+			if(!_v.vPwd($lgPwd.val())){
+				spayErrorMsg(stimer,"密码格式不对");
+				return false;
+			}
+			return true;
+		}
+		
+		function loginFun(){
+			var phoneNum=getPhone;
+			var lgPwd=$("#lgPwd").val();
+			$.ajax({
+             	type: "post",
+	            dataType: "json",
+	            url: apiPath+"appBeCalled/login?t=" + (+new Date()),
+	            data: { "username": phoneNum,"password":$.md5(lgPwd)},
+	            beforeSend: function (XMLHttpRequest) {
+					loader.showL();
+	            },
+	            success:function(data) {
+					if(data.errorCode==0){
+						if(localStorage.orderList!=""&&localStorage.orderList!=undefined){
+							//alert(localStorage.orderList)
+							spayErrorMsg(stimer,"登录成功",1000);
+							saveOrder();
+						}else{
+							spayErrorMsg(stimer,"登录成功",1500);
+							location.href="productList.html";
+						}
+					}else {
+						spayErrorMsg(stimer,data.errorMessage,2000);
+					}
+	                loader.hideL();
+	            },
+	            error: function(d){
+	            	spayErrorMsg(stimer,"网络错误",2000);
+	            	loader.hideL();
+	            }
+	        });
+		}
+
+		prompBox.init(function(){},function(){});
+		//保存订单
+		function saveOrder(){
+			var selectProduct = JSON.parse(localStorage.orderList),selectNum = localStorage.stagesNum;
+			var __obj = {
+				"periods":selectNum,
+				"productList":selectProduct
+			}
+			__obj = JSON.stringify(__obj);
+			//$ajax save order
+			$.ajax({
+				type: "post",
+				dataType: "json",
+				url: apiPath + "beautiful/confirmInstalment?t=" + (+new Date()),
+				data: {instalment: __obj},
+				beforeSend: function (XMLHttpRequest) {
+					loader.showL();
+				},
+				success: function (d) {
+					if(d.isJump==1) location.href = "login.html";
+					localStorage.orderList = "";
+					localStorage.stagesNum = "";
+					if(d.errorCode==0){
+						var status_ = d.data.status;
+						if(status_==0){
+							location.href = "login.html";
+						}else if(status_==1){
+							//alert("已登录未信审")
+							location.href = "creditInfo.html";
+						}else if(status_==2){
+							//alert("已登录已信审")
+							location.href = location.href = urlPath + 'auditStatus.html';//location.href = "personCenter.html";
+						}else if(status_==3){
+							prompBox.showL();//有未完成的订单
+						}
+					}else{
+						spayErrorMsg(stimer, d.errorMessage,2000);
+						location.href="productList.html";
+					}
+					loader.hideL();
+				},
+				error: function (XMLHttpRequest, textStatus, errorThrown) {
+					loader.hideL();
+				}
+			});
+		}
+	</script>
+</body>
+</html>

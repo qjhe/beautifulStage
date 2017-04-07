@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta name="apple-wap-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+	<link rel="stylesheet" type="text/css" href="css/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="css/base.css"/>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	<script src="js/base.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	    remFn(10);
+	</script>
+</head>
+<body class="bodyNobg">
+	<div class="commWidth">
+		<header class="headerBg">
+			<a href="javascript:history.go(-1)"></a>
+		    <div class="left"><i class="icon-keyboard_arrow_left"></i></div>
+		    <div class="title">注册</div>
+		</header>
+		<div class="beauWrap">
+			<div class="bs-tip">
+				<p>短信验证码已发送至</p>
+				<p class="reg-telNum">19811420354</p>
+				<input type="hidden" name="phoneNum" id="phoneNum" value="19811420354" />
+				<input type="hidden" name="tocken" id="tocken" value="" />
+
+			</div>
+			<ul class="bs-info-rg">
+				<li class="bs-inpt bs-vcode">
+					<span class="icon-ver-code col6"></span>
+					<input type="tel" name="" id="code" value="" placeholder="请输入验证码" max="6" maxlength="6" autocomplete="off"/>
+					<span class="getVcodeBtn" id="getVcodeBtn">重新获取(60)</span>
+				</li>
+				<li class="bs-inpt bs-lgpwd">
+					<span class="icon-pwd col6"></span>
+					<input type="password" name="" id="lgPwd" value="" placeholder="请输入登录密码" style="width: 6.5rem;" autocomplete="off"/>
+					<span class="icon-eye-close col6" id="pwdShowBtn"><!--icon-eye-open--></span>
+				</li>
+				<li class="bs-agre">
+					<span class="icon-agree colblu" data-type="1"></span>
+					<span class="col9">同意<a href="http://192.168.1.51:8080/frontend/frontendServer/beautifulstage/login.html">《注册服务协议》</a>和<a href="javascript:;">《隐私政策》</a></span>
+					
+				</li>
+				<li class="bs-regLi"><a href="javascript:;" class="Bs-Btn gray">注册</a></li>
+				<!--bs-gray-->
+			</ul>
+			<div class="spay-msg-box"></div>
+		</div>
+	</div>
+	<script src="js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/ssValidate.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jQuery.md5.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var stimer=null;
+		var getPhone=getURLQueryString("phoneNum");
+		var lastPhone=getPhone.substr(0,3)+" "+getPhone.substr(3,4)+" "+getPhone.substr(7,4);
+		$(".reg-telNum").html(lastPhone);
+		 var $lgPwd = $("#lgPwd"),
+		 	$code = $("#code"),
+		 	$phoneNum=$("#phoneNum"),
+		 	$iconAgree=$(".icon-agree"),
+		 	$bsBtn=$(".Bs-Btn");
+		//短信验证码
+		var timerMsg = null;
+		var iSec = 60;
+		var mBtn = $("#getVcodeBtn");
+		 	loader.init();
+		/*密码显示*/
+		$("#pwdShowBtn").on("click",function(){
+			var _this=$(this);
+			if(_this.hasClass("icon-eye-open")){
+				_this.removeClass("icon-eye-open");
+				_this.siblings("#lgPwd").attr("type","password");
+			}else{
+				_this.addClass("icon-eye-open");
+				_this.siblings("#lgPwd").attr("type","text");
+			}
+		})
+		/*勾选协议*/
+		$(".icon-agree").on("click",function(){
+			var _this=$(this);
+			if(_this.hasClass("icon-check-false")){
+				_this.removeClass("icon-check-false");
+				_this.attr("data-type","1");
+			}else{
+				_this.addClass("icon-check-false");
+				_this.attr("data-type","0");
+			}
+		})
+		$lgPwd.on("input blur",function(){
+			highBtnFun();
+			var newV=$(this).val().replace(/[^a-zA-Z0-9\-]$/,"");
+			$(this).val(newV)
+		});
+		$code.on("input blur",highBtnFun)
+		$iconAgree.on("click",highBtnFun)
+		function highBtnFun(){
+			if($lgPwd.val()!=""&&$code.val()!=""&&!$iconAgree.hasClass("icon-check-false")){
+				$bsBtn.removeClass("gray").off("click").on("click",regFun);
+			}else{
+				$bsBtn.addClass("gray").off("click");
+			}
+		}
+		function regFun(){
+	       if(validFun()){
+	           reg();
+	       }
+	     }
+	    loader.init();
+	    var _v = new mValidate();
+	    var stimer = null;
+	    //注册
+	    function validFun(){
+			var stimer=null;
+			if(!_v.isSMCode($code.val())){
+				spayErrorMsg(stimer,"验证码格式不对");
+				return false;
+			}
+			if(!_v.vPwd($lgPwd.val())){
+				spayErrorMsg(stimer,"密码格式不对");
+				return false;
+			}
+			return true;
+		}
+		getToken()
+		function getToken(){
+			var data={
+				height:"568",
+				signature:"54cd7e7c054ddfbfee9f267a5f721f749f8e5d63",
+				source:"mobile",
+				system:"iOS10.0.2",
+				verifycode:"019408",
+				usename:getPhone,
+				timestamp:"1484298312",
+				version:"1.0.5",
+				width:"320"
+			};
+			$.ajax({
+				type:"POST",
+				url: apiPath+"accesstoken?t=" + (+new Date()),
+				data:data,
+				beforeSend:function(){
+					loader.showL();
+				},
+				success:function(data) {
+					if(data.errorCode==0){
+						$("#tocken").val(data.data);
+						getVecod();
+					}
+					loader.hideL();
+				},
+				error: function(d){
+					spayErrorMsg(stimer,"网络错误",2000);
+					loader.hideL();
+				}
+			});
+		}
+
+		function getVecod(){
+			mBtn.off("click");
+			var tocken=$("#tocken").val();
+			var data={
+				accesstoken:tocken,
+				type:"1",
+				business:"onLineRegister",
+				mobile:getPhone
+			}
+			$.ajax({
+				type:"POST",
+				url: apiPath+"appBeCalled/getVerifyCode",
+				data:data,
+				beforeSend:function(){
+					loader.showL();
+				},
+				success:function(data) {
+
+					if(data.errorCode==0){
+						//ajax请求 success后执行：
+						clearInterval(timerMsg);iSec = 60;
+						mBtn.addClass("gray").html("重新获取"+iSec);
+						timerMsg = setInterval(function(){
+							if(iSec<=1){
+								clearInterval(timerMsg);iSec = 60;
+								mBtn.removeClass("gray").html("重新获取").on("click",getVecod);
+							}else{
+								iSec--;
+								mBtn.html("重新获取"+iSec);
+							}
+						},1000);
+					}else{
+						spayErrorMsg(stimer, d.errorMessage,1500);
+					}
+					loader.hideL();
+				},
+				error: function(d){
+					spayErrorMsg(stimer,"网络错误",2000);
+					loader.hideL();
+				}
+			});
+		}
+	    function reg(){//注册逻辑
+	        $.ajax({
+	            type:"POST",
+	            url: apiPath+"appBeCalled/register?t=" + (+new Date()),
+	            data:{accesstoken:$("#tocken").val(),password:$.md5($lgPwd.val()), source:"iOS",username:getPhone,verifycode:$code.val()},
+	            beforeSend:function(){
+	                loader.showL();
+	            },
+	            success:function(data) {
+	               if(data.errorCode == 0) {
+					   if(localStorage.orderList!=""&&localStorage.orderList!=undefined){
+						   spayErrorMsg(stimer,"注册成功",1000);
+						   saveOrder();
+					   }else{
+						   spayErrorMsg(stimer,"注册成功",1500);
+						   location.href = "login2.html?phoneNum="+getPhone;
+					   }
+	                } else {
+	                        spayErrorMsg(stimer,data.errorMessage,2000);
+	                }
+	                loader.hideL();
+	            },
+	            error: function(d){
+	            	spayErrorMsg(stimer,"网络错误",2000);
+	            	loader.hideL();
+	            }
+	        });
+	    }
+		//保存订单
+		function saveOrder(){
+			var selectProduct = JSON.parse(localStorage.orderList),selectNum = localStorage.stagesNum;
+			var __obj = {
+				"periods":selectNum,
+				"productList":selectProduct
+			}
+			__obj = JSON.stringify(__obj);
+			//$ajax save order
+			$.ajax({
+				type: "post",
+				dataType: "json",
+				url: apiPath + "beautiful/confirmInstalment?t=" + (+new Date()),
+				data: {instalment: __obj},
+				beforeSend: function (XMLHttpRequest) {
+					loader.showL();
+				},
+				success: function (d) {
+					if(d.isJump==1){
+						location.href = "login2.html?phoneNum="+getPhone;
+					}else{
+						localStorage.orderList = "";
+						localStorage.stagesNum = "";
+						if(d.errorCode==0){
+							var status_ = d.data.status;
+							if(status_==0){
+								location.href = "login.html";
+							}else if(status_==1){
+								//alert("已登录未信审")
+								location.href = "creditInfo.html";
+							}else if(status_==2){
+								//alert("已登录已信审")
+								location.href = "personCenter.html";
+							}else if(status_==2){
+								prompBox.showL();//有未完成的订单
+							}
+						}else{
+							spayErrorMsg(stimer, d.errorMessage,2000);
+						}
+						loader.hideL();
+					}
+				},
+				error: function (XMLHttpRequest, textStatus, errorThrown) {
+					loader.hideL();
+				}
+			});
+		}
+
+
+
+		//发送验证码
+	  	mBtn.on("click",function(){
+	  		 getVecod()
+	    });
+	    //获取短信验证码
+		/* function sendMsg(){
+	        mBtn.off("click");
+	        $.ajax({
+	            type:"POST",
+	            url:configUrl+'/register/code/phone',
+	            data:{phoneNum:$phoneNum.val()},
+	            beforeSend:function(){
+	                loader.showL();
+	            },
+	            success:function(result) {
+	            	var d = eval('('+result+')');
+	            	loader.hideL();
+	                if(!d.success) spayErrorMsg(stimer,"短信验证码发送失败",1500);
+	            },
+	            error: function(d){
+	            	loader.hideL();
+	            }
+	        });
+	        //ajax请求 success后执行：
+	        clearInterval(timerMsg);iSec = 60;
+	        mBtn.addClass("gray").html("重新获取"+iSec);
+	        timerMsg = setInterval(function(){
+	            if(iSec<=1){
+	                clearInterval(timerMsg);iSec = 60;
+	                mBtn.on("click",sendMsg).removeClass("gray").html("重新获取");
+	            }else{
+	                iSec--;
+	                mBtn.html("重新获取"+iSec);
+	            }
+	        },1000);
+	    }
+	    
+	var iUrl='';
+	var obj=new Object();
+	$.ajax({
+		url : "/h5/share",
+		data : {
+			'url' : location.href.split('#')[0]
+		},
+		type : "post",
+		success : function( data ) {
+			//alert("微信分享次数加1");
+			//console.log( data );
+			var appid = data.appid;
+			var timestamp = data.timestamp;
+			var nonceStr = data.nonceStr;
+			var signature = data.signature;
+			obj['appid'] = appid;
+			obj['timestamp'] = timestamp;
+			obj['nonceStr'] = nonceStr;
+			obj['signature'] = signature;
+	
+			var wx_link = iUrl+'h5/register';
+			//<!-- 微信分享 -->
+			wx.config({
+				debug : false,
+				appId : obj['appid'],
+				timestamp : obj['timestamp'],
+				nonceStr : obj['nonceStr'],
+				signature : obj['signature'],
+				jsApiList : [ 'onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareQZone' ]
+			});
+			
+			wx.ready(function() {
+				var sdata = {
+					title : '松鼠普惠商户注册邀请',
+					desc : '收款方便，语音提示，消费者支持支付宝与微信。级别越高，费率越低，高级别更有分润。',
+					link : wx_link,
+					imgUrl : 'https://www.squcorp.com/static/squcorp/hxEnterprise/image/img20161208/shlogo.jpg',
+					success : function() {
+						alert("微信分享成功");
+					},
+					cancel : function() {
+						alert("分享失败");
+					}
+				};
+				wx.onMenuShareTimeline(sdata);
+				wx.onMenuShareAppMessage(sdata);
+				wx.onMenuShareQQ(sdata);
+				wx.onMenuShareQZone(sdata);
+				
+			});
+		}
+	});
+*/
+	</script>
+</body>
+</html>

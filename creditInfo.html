@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>信用资料</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta name="apple-wap-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+	<link rel="stylesheet" href="js/bone/mobilebone.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/icon.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="js/bone/mobilebone.animate.css">
+	<script src="js/base.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	    remFn(10);
+	</script>
+</head>
+<body class="bodyNobg">
+	<div class="page out" id="page1">
+		<div class="commWidth">
+			<header class="headerBg">
+			    <div class="left"><a href="javascript:location.href = urlPath + 'accountCenter.html'"></a><i class="icon-keyboard_arrow_left"></i></div>
+			    <div class="title">信用资料</div>
+			</header>
+			<div class="beauWrap">
+				<div class="bs-credInfo clearFiex"></div>
+				<ul class="bs-infolist" id="idInfoList"></ul>
+				<div class="spay-msg-box"></div>
+			</div>
+		</div>
+	</div>
+	<div class="page out"  id="page2">
+		<div class="commWidth">
+			<header class="headerBg">
+			    <div class="left"><a href="#page1"  data-rel="auto"></a><i class="icon-keyboard_arrow_left"></i></div>
+			    <div class="title">信用资料</div>
+			</header>
+			<div class="beauWrap">
+				<div class="bs-credInfo clearFiex"></div>
+				<ul class="bs-infolist" id="bindCardList"></ul>
+				<div class="bs-bankList">
+					<h3>支持银行列表</h3>
+					<ul class="bankList clearFiex">
+						<li class="borT"><img src="images/bankIcon_01.png" class="bankIcon"/>中国银行</li>
+						<li class="borT"><img src="images/bankIcon_02.png" class="bankIcon"/>工商银行</li>
+						<li><img src="images/bankIcon_03.png" class="bankIcon"/>邮政储蓄</li>
+						<li><img src="images/bankIcon_04.png" class="bankIcon"/>建设银行</li>
+						<li><img src="images/bankIcon_05.png" class="bankIcon" style="margin-left: -0.3125rem;"/>光大银行</li>
+						<li><img src="images/bankIcon_06.png" class="bankIcon"/>中信银行</li>
+						<li><img src="images/bankIcon_07.png" class="bankIcon"/>浦发银行</li>
+						<li><img src="images/bankIcon_08.png" class="bankIcon"/>华夏银行</li>
+						<li><img src="images/bankIcon_09.png" class="bankIcon" style="margin-left: -0.3125rem;"/>兴业银行</li>
+						<li><img src="images/bankIcon_10.png" class="bankIcon"/>北京银行</li>
+					</ul>
+				</div>
+				<ul id="bindCardUl">
+					
+				</ul>
+				<div class="spay-msg-box"></div>
+			</div>
+		</div>
+	</div>
+	<div class="page out"  id="page3">
+		<div class="commWidth">
+			<header class="headerBg">
+			    <div class="left"><a  href="#page2"  data-rel="auto"></a><i class="icon-keyboard_arrow_left"></i></div>
+			    <div class="title">信用资料</div>
+			</header>
+			<div class="beauWrap">
+				<div class="bs-credInfo clearFiex"></div>
+				<ul class="bs-infolist" id="SocialInfoList"></ul>
+				<div class="spay-msg-box"></div>
+			</div>
+		</div>
+	</div>
+	<script src="js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/ssValidate.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jQuery.md5.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bone/mobilebone.js"></script>
+	<script type="text/javascript">
+	//获取返回地址
+	var referrer = document.referrer;
+
+	var stimer=null;
+	var _v=new mValidate();
+	loader.init();
+	var bindCardLi='<li  class="bs-regLi"><a href="javascript:;" class="Bs-Btn gray" id="bindNextBtn">下一步</a></li>';
+	var _idInfoList = '<li class="bs-infoItem clearFiex">' +
+			'<span class="bs-info-tit">姓名</span>' +
+			'<input type="text" name="" id="Name" value="" class="bs-info-inp fr" autocomplete="off" placeholder="请输入姓名"/>' +
+			'</li>' +
+			'<li class="bs-infoItem clearFiex"><span class="bs-info-tit">身份证号</span>' +
+			'<input type="text" name="" id="Idcard"  value="" class="bs-info-inp fr" autocomplete="off" placeholder="请输入身份证号"/>' +
+			'</li>' +
+			'<li  class="bs-regLi"><a href="javascript:;" class="Bs-Btn gray" id="creNextBtn">下一步</a></li>';
+	var _bindCardList=	'<li class="bs-infoItem clearFiex">' +
+			'<span class="bs-info-tit">本人银行卡号</span>' +
+			'<input type="tel" name="" id="bankCard" value="" class="bs-info-inp fr" autocomplete="off" placeholder="请输入银行卡号" max="20" maxlength="20"/>' +
+			'</li>' +
+			'<li class="bs-infoItem clearFiex">' +
+			'<span class="bs-info-tit">手机号</span>' +
+			'<input type="tel" name="" id="telNum"  value="" class="bs-info-inp fr" autocomplete="off" placeholder="请输入预留手机号" max="11" maxlength="11"/>' +
+			'</li>';
+	var _SocialInfoList='<li class="bs-infoItem  clearFiex"><span class="bs-info-tit">亲属联系人</span><input type="text" name="" id="kinContacts" value="" class="bs-info-inp" autocomplete="off" placeholder="请输入亲属联系人"/></li><li class="bs-infoItem  clearFiex relationShipLi"><span class="bs-info-tit">与本人关系</span>' +
+			'<select name="" id="relationShip">' +
+			'<option value="-1">请选择</option>' +
+			'<option value="0">父母</option>' +
+			'<option value="1">配偶</option>' +
+			'<option value="2">兄弟姐妹</option>' +
+			'<option value="3">朋友</option>' +
+			'</select>' +
+			'<span class="fr"><i>请选择</i>&nbsp;<em class="icon-keyboard_arrow_right"></em></span>' +
+			'</li>' +
+			'<li class="bs-infoItem  clearFiex">' +
+			'<span class="bs-info-tit">联系电话</span>' +
+			'<input type="tel" name="" id="relationPhone"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入联系电话" max="11" maxlength="11"/>' +
+			'</li>' +
+			'<li class="bs-infoItem  clearFiex">' +
+			'<span class="bs-info-tit">同事联系人</span>' +
+			'<input type="text" name="" id="colleage"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入同事联系人"/>' +
+			'</li>' +
+			'<li class="bs-infoItem  clearFiex">' +
+			'<span class="bs-info-tit">联系电话</span>' +
+			'<input type="tel" name="" id="colleagePhone"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入联系电话" max="11" maxlength="11"/>' +
+			'</li>' +
+			'<li class="SociInfotit">QQ号码或微信账号至少填写一项</li>' +
+			'<li class="bs-infoItem  clearFiex">' +
+			'<span class="bs-info-tit">QQ号码</span>' +
+			'<input type="tel" name="" id="qqNum"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入QQ号码"/>' +
+			'</li>' +
+			'<li class="bs-infoItem  clearFiex">' +
+			'<span class="bs-info-tit">微信账号</span>' +
+			'<input type="text" name="" id="webchatNum"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入微信账号"/>' +
+			'</li>' +
+			'<li class="bs-infoItem  clearFiex">' +
+			'<span class="bs-info-tit">新浪微博账号（选填）</span>' +
+			'<input type="text" name="" id="sinaNum"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入新浪微博账号"/>' +
+			'</li>' +
+			'<li  class="bs-regLi">' +
+			'<a href="javascript:;" class="Bs-Btn gray" id="sociNextBtn">提交</a>' +
+			'</li>';
+			
+			
+	var	$idInfoList=$("#idInfoList"),
+		$bindCardList=$("#bindCardList"),
+		$SocialInfoList=$("#SocialInfoList");
+			
+	getCreprogress()
+	function getCreprogress(){
+		$.ajax({
+			type: "get",
+			dataType: "json",
+			url:apiPath+"beautiful/creditProgress",
+			beforeSend: function (XMLHttpRequest) {
+				loader.showL();
+			},
+			success:function(data) {
+				if(data.errorCode==0){
+					var ret=data.data;
+					/*if(!ret.isregister){
+						console.log("未注册");
+					}else*/ if(ret.isrealname&&ret.isbindcard&&ret.issocial){
+						//三步全部完成
+						finishFun();
+						console.log("已实名，已绑卡，已提交社交信息");
+					}else if(ret.isrealname&&ret.isbindcard&&!ret.issocial){
+						//到社交信息
+						toSocialFun();
+						Mobilebone.transition($("#page3")[0],$("#page2")[0]);
+						console.log("已实名，已绑卡，未提交社交信息");
+
+					}else if(ret.isrealname&&!ret.isbindcard&&!ret.issocial){
+						//到绑卡步骤
+						toBindCardFun();
+						Mobilebone.transition($("#page2")[0],$("#page1")[0]);
+						console.log("已实名，未绑卡");
+					}else{
+						//到身份认证步骤
+						toIdinfoFun();
+						console.log("未实名认证");
+					}
+				}else {
+					spayErrorMsg(stimer,data.errorMessage,2000);
+				}
+				loader.hideL();
+			},
+			error: function(d){
+				spayErrorMsg(stimer,"网络错误",2000);
+				loader.hideL();
+			}
+		})
+	}
+	//到第一步骤
+	function toIdinfoFun(){
+		titHtml(0);
+		$idInfoList.html(_idInfoList);
+		$("#bindCardUl").html(bindCardLi);
+		$bindCardList.html(_bindCardList);
+		$SocialInfoList.html(_SocialInfoList);
+		initFun()
+	}
+	//到绑卡步骤
+	function toBindCardFun(){
+		titHtml(1);
+		getIdenInfoFun();
+		$bindCardList.html(_bindCardList);
+		$("#bindCardUl").html(bindCardLi);
+		$SocialInfoList.html(_SocialInfoList);
+		initFun()
+	}
+	//到社交信息
+	function toSocialFun(){
+		titHtml(2)
+		getIdenInfoFun();
+		getBindCardFun();
+		$SocialInfoList.html(_SocialInfoList);
+		initFun()
+	}
+	//三步完成
+	function finishFun(){
+		titHtml(2)
+		getIdenInfoFun();
+		getBindCardFun();
+		getSocialFun();
+	}
+	function getIdenInfoFun(){//查询身份信息
+		var _idInfoList1="";
+		$.ajax({
+			type: "get",
+			dataType: "json",
+			url: apiPath+"/beautiful/identityInfo?t=" + (+new Date()),
+			beforeSend: function (XMLHttpRequest) {
+				loader.showL();
+			},
+			success:function(data) {
+				var ret=data.data;
+				if(data.errorCode==0){
+					_idInfoList1= '<li class="bs-infoItem clearFiex">' +
+							'<span class="bs-info-tit">姓名</span>' +
+							'<input type="text" name="" id="Name" value="'+ret.userName+'" class="bs-info-inp fr" autocomplete="off" placeholder="请输入姓名" readonly="readonly"/>'+
+							
+							'</li>' +
+							'<li class="bs-infoItem clearFiex"><span class="bs-info-tit">身份证号</span>' +
+							'<input type="text" name="" id="Idcard"  value="'+ret.idCard+'" class="bs-info-inp fr" autocomplete="off" placeholder="请输入身份证号" readonly="readonly"/>' +
+							'</li>';
+					$idInfoList.html(_idInfoList1);
+				}else {
+					spayErrorMsg(stimer,data.errorMessage,2000);
+				}
+				loader.hideL();
+			},
+			error: function(d){
+				spayErrorMsg(stimer,"网络错误",2000);
+				loader.hideL();
+			}
+		});
+
+	}
+	function getBindCardFun(){//查询绑卡信息
+		var _bindCardList1="";
+		$.ajax({
+			type: "get",
+			dataType: "json",
+			url: apiPath+"/beautiful/bankcardInfo?t=" + (+new Date()),
+			beforeSend: function (XMLHttpRequest) {
+				loader.showL();
+			},
+			success:function(data) {
+				var ret=data.data;
+				if(data.errorCode==0){
+					_bindCardList1= '<li class="bs-infoItem clearFiex">' +
+							'<span class="bs-info-tit">本人银行卡号</span>' +
+							'<input type="tel" name="" id="bankCard" value="'+ret.cardno+'" class="bs-info-inp fr" autocomplete="off" placeholder="请输入银行卡号" max="20" maxlength="20" readonly="readonly"/>' +
+							'</li>' +
+							'<li class="bs-infoItem clearFiex"><span class="bs-info-tit">手机号</span>' +
+							'<input type="tel" name="" id="telNum"  value="'+ret.mobile+'" class="bs-info-inp fr" autocomplete="off" placeholder="请输入预留手机号" max="11" maxlength="11" readonly="readonly"/>' +
+							'</li>';
+					$bindCardList.html(_bindCardList1);
+				}else {
+					spayErrorMsg(stimer,data.errorMessage,2000);
+				}
+				loader.hideL();
+			},
+			error: function(d){
+				spayErrorMsg(stimer,"网络错误",2000);
+				loader.hideL();
+			}
+		});
+	}
+	function getSocialFun(){//查询社交信息
+		var _SocialInfoList1="";
+		$.ajax({
+			type: "get",
+			dataType: "json",
+			url: apiPath+"/beautiful/socialInfo?t=" + (+new Date()),
+			beforeSend: function (XMLHttpRequest) {
+				loader.showL();
+			},
+			success:function(data) {
+				var ret=data.data;
+				if(data.errorCode==0){
+					_SocialInfoList1= '<li class="bs-infoItem clearFiex">' +
+							'<span class="bs-info-tit">亲属联系人</span>' +
+							'<input type="text" name="" id="kinContacts" value="'+ret.relativesName+'" class="bs-info-inp" autocomplete="off" placeholder="请输入亲属联系人" readonly="readonly"/>'+
+							'</li>' +
+							'<li class="bs-infoItem clearFiex relationShipLi">' +
+							'<span class="bs-info-tit">与本人关系</span>' +
+							'<span class="fr"><i>'+ret.relationship+'</i>&nbsp;<em class="icon-keyboard_arrow_right"></em></span>' +
+							'</li>'+
+							'<li class="bs-infoItem clearFiex"><span class="bs-info-tit">联系电话</span>' +
+							'<input type="tel" name="" id="relationPhone"  value="'+ret.relativesPhone+'" class="bs-info-inp" autocomplete="off" placeholder="请输入联系电话" max="11" maxlength="11"  readonly="readonly"/>' +
+							'</li>'+
+							'<li class="bs-infoItem clearFiex"><span class="bs-info-tit">同事联系人</span>' +
+							'<input type="text" name="" id="colleage"  value="'+ret.contactName+'" class="bs-info-inp" autocomplete="off" placeholder="请输入同事联系人"  readonly="readonly"/>' +
+							'</li>'+
+							'<li class="bs-infoItem clearFiex"><span class="bs-info-tit">联系电话</span>' +
+							'<input type="tel" name="" id="colleagePhone"  value="'+ret.contactPhone+'" class="bs-info-inp" autocomplete="off" placeholder="请输入联系电话" max="11" maxlength="11"  readonly="readonly"/>' +
+							'</li>'+
+							'<li class="SociInfotit">QQ号码或微信账号至少填写一项</li>' +
+							'<li class="bs-infoItem clearFiex"><span class="bs-info-tit">QQ号码</span>' ;
+					if(ret.qq==null){
+						_SocialInfoList1+='<input type="tel" name="" id="qqNum"  value="无" class="bs-info-inp" autocomplete="off" placeholder="请输入QQ号码"  readonly="readonly"/>' ;
+					}else{
+						_SocialInfoList1+='<input type="tel" name="" id="qqNum"  value="'+ret.qq+'" class="bs-info-inp" autocomplete="off" placeholder="请输入QQ号码"  readonly="readonly"/>' ;
+					}
+
+					_SocialInfoList1+=	'</li>'+
+							'<li class="bs-infoItem clearFiex"><span class="bs-info-tit">微信账号</span>' ;
+					if(ret.weixin==""){
+						_SocialInfoList1+='<input type="text" name="" id="webchatNum"  value="无" class="bs-info-inp" autocomplete="off" placeholder="请输入微信账号"  readonly="readonly"/>' ;
+					}else{
+						_SocialInfoList1+='<input type="text" name="" id="webchatNum"  value="'+ret.weixin+'" class="bs-info-inp" autocomplete="off" placeholder="请输入微信账号"  readonly="readonly"/>' ;
+					}
+
+					_SocialInfoList1+=	'</li>'+
+							'<li class="bs-infoItem clearFiex"><span class="bs-info-tit">新浪微博账号（选填）</span>' ;
+
+					if(ret.weibo==""){
+						_SocialInfoList1+='<input type="text" name="" id="sinaNum"  value="无" class="bs-info-inp" autocomplete="off" placeholder="请输入新浪微博账号"  readonly="readonly"/>' ;
+					}else{
+						_SocialInfoList1+='<input type="text" name="" id="sinaNum"  value="'+ret.weibo+'" class="bs-info-inp" autocomplete="off" placeholder="请输入新浪微博账号"  readonly="readonly"/>'  ;
+					}
+					_SocialInfoList1+='</li>';
+					$SocialInfoList.html(_SocialInfoList1);
+				}else {
+					spayErrorMsg(stimer,data.errorMessage,2000);
+				}
+				loader.hideL();
+			},
+			error: function(d){
+				spayErrorMsg(stimer,"网络错误",2000);
+				loader.hideL();
+			}
+		});
+	}
+	/*进度展示*/
+	var arr=[
+		["active","","","display:block","display:none","display:none"],
+		["active","active","","display:block","display:block","display:none"],
+		["active","active","active","display:block","display:block","display:block"]
+	];
+	function titHtml(num){
+		var _titHtml='<div class="bs-creItem">'+
+						'<div class="bs-crePic '+arr[num][0]+'">'+
+							'<a href="#page1" style="'+arr[num][3]+'"  data-rel="auto"></a>'+
+							'<span class="icon-card"></span>'+
+							'<span class="bs-creLine-right '+arr[num][0]+'"></span>'+
+						'</div>'+
+						'<p>身份认证</p>'+
+					'</div>'+
+					'<div class="bs-creItem">'+
+						'<div class="bs-crePic '+arr[num][1]+'">'+
+						'<a href="#page2" style="'+arr[num][4]+'" id="btn" data-rel="auto"></a>'+
+							'<span class="icon-phone"></span>'+
+							'<span class="bs-creLine-left '+arr[num][1]+'"></span>'+
+							'<span class="bs-creLine-right '+arr[num][1]+'"></span>'+
+						'</div>'+
+						'<p>绑定银行卡</p>'+
+					'</div>'+
+					'<div class="bs-creItem">'+
+						'<div class="bs-crePic '+arr[num][2]+'">'+
+							'<a href="#page3" style="'+arr[num][5]+'"  data-rel="auto"></a>'+
+							'<span class="icon-msg bs-creFont"></span>'+
+							'<span class="bs-creLine-left '+arr[num][2]+'"></span>'+
+						'</div>'+
+						'<p>社交信息</p>'+
+					'</div>';		
+		$(".bs-credInfo").html(_titHtml)
+	}
+	function initFun(){
+	//select 选择
+		var $creNextBtn=$("#creNextBtn"),
+			$bindNextBtn=$("#bindNextBtn"),
+			$sociNextBtn=$("#sociNextBtn"),
+			$Name=$("#Name"),
+			$Idcard=$("#Idcard"),
+			$bankCard=$("#bankCard"),
+			$telNum=$("#telNum"),
+			$kinContacts=$("#kinContacts"),
+			$relationShip=$("#relationShip"),
+			$relationPhone=$("#relationPhone"),
+			$colleage=$("#colleage"),
+			$colleagePhone=$("#colleagePhone"),
+			$qqNum=$("#qqNum"),
+			$webchatNum=$("#webchatNum"),
+			$sinaNum=$("#sinaNum");
+	
+	
+	
+	var $vi = $(".relationShipLi span i"), $sel = $(".relationShipLi select");
+		$sel.on("change",function(){
+		    $vi.html($sel.find("option:selected").html());
+		});
+
+		$(document).on("input blur","#Name,#Idcard",highNextbtn1);
+		$(document).on("input blur","#bankCard,#telNum",highNextbtn2);
+		$(document).on("input blur","#kinContacts,#relationShip,#relationPhone,#colleage,#colleagePhone,#qqNum,#webchatNum",highNextbtn3);
+		function highNextbtn1(){
+			if($Name.val()!=""&&$Idcard.val()!=""){
+				$creNextBtn.removeClass("gray").off("click").on("click",nextFun1);
+			}else{
+				$creNextBtn.addClass("gray").off("click");
+			}
+		}
+		
+		function nextFun1(){
+			if(validFun1()){
+				SubFun1();
+			}
+		}
+		function validFun1(){
+			if(!_v.isEmpty($Name.val())){
+				spayErrorMsg(stimer,"姓名不能为空");
+				return false;
+			}
+			if(!_v.isEmpty($Idcard.val())){
+				spayErrorMsg(stimer,"身份证号不能为空");
+				return false;
+			}
+			if(!_idcardno($Idcard.val())){
+				spayErrorMsg(stimer,"身份证号输入有误");
+				return false;
+			}
+			return true;
+		}
+		function SubFun1(){
+			var Name=$("#Name").val(),
+				Idcard=$("#Idcard").val();
+				//131121199010193829
+			$.ajax({
+             	type: "post",
+	            dataType: "json",
+	            url: apiPath+"/beautiful/authIdentity?t=" + (+new Date()),
+	            data: {"userName":Name,"idCard":Idcard},
+	            beforeSend: function (XMLHttpRequest) {
+					loader.showL();
+	            },
+	            success:function(data) {
+					if(data.errorCode==0){
+						titHtml(1);
+						//$creNextBtn.attr("href","#page2");
+						//Mobilebone.handleTapEvent($("#ap2")[0]);
+						Mobilebone.transition($("#page2")[0],$("#page1")[0]);
+						$("#idInfoList input").attr("readonly","readonly");
+						$("#creNextBtn").hide();
+
+					}else {
+						$creNextBtn.attr("href","javascript:;")
+						spayErrorMsg(stimer,data.errorMessage,2000);
+					}
+	                loader.hideL();
+	            },
+	            error: function(d){
+	            	spayErrorMsg(stimer,"网络错误",2000);
+	            	loader.hideL();
+	            }
+	        });
+		}
+		
+		function highNextbtn2(){
+			if($bankCard.val()!=""&&$telNum.val()!=""){
+				$bindNextBtn.removeClass("gray").off("click").on("click",nextFun2);
+			}else{
+				$bindNextBtn.addClass("gray").off("click");
+			}
+		}
+		
+		function nextFun2(){
+			if(validFun2()){
+				SubFun2()
+				
+			}
+		}
+		function validFun2(){
+			if(!_v.isEmpty($bankCard.val())){
+				spayErrorMsg(stimer,"银行卡号不能为空");
+				return false;
+			}
+			if(!_v.isNum($bankCard.val())){
+				spayErrorMsg(stimer,"银行卡号格式不正确");
+				return false;
+			}
+			if(!_v.isEmpty($telNum.val())){
+				spayErrorMsg(stimer,"手机号不能为空");
+				return false;
+			}
+			if(!_v.mobile($telNum.val())){
+				spayErrorMsg(stimer,"手机号格式错误");
+				return false;
+			}
+			
+			return true;
+		}
+		
+		function SubFun2(){
+			var bankCard=$("#bankCard").val(),telNum=$("#telNum").val();
+
+			$.ajax({
+             	type: "post",
+	            dataType: "json",
+	            url: apiPath+"beautiful/bindBankcard?t=" + (+new Date()),
+	            data: { "cardno":bankCard,"mobile":telNum,"cardType":1},
+	            beforeSend: function (XMLHttpRequest) {
+					loader.showL();
+	            },
+	            success:function(data) {
+					if(data.errorCode==0){
+						/*$bindNextBtn.attr("href","#page3");*/
+						titHtml(2);
+						$("#bindCardList input").attr("readonly","readonly")
+						$("#bindNextBtn").hide();
+						Mobilebone.transition($("#page3")[0],$("#page2")[0]);
+
+					}else {
+						$bindNextBtn.attr("href","javascript:;")
+						spayErrorMsg(stimer,data.errorMessage,2000);
+					}
+	                loader.hideL();
+	            },
+	            error: function(d){
+	            	spayErrorMsg(stimer,"网络错误",2000);
+	            	loader.hideL();
+	            }
+	        });
+		}
+		
+		function highNextbtn3(){
+			if($qqNum.val()==""&&$webchatNum.val()==""){
+				isFlag=false;
+			}else{
+				isFlag=true;
+			}
+			if($kinContacts.val()!=""&&$relationShip.val()!=-1&&$relationPhone.val()!=""&&$colleage.val()!=""&&$colleagePhone.val()!=""&&isFlag){
+				$sociNextBtn.removeClass("gray").off("click").on("click",nextFun3);
+			}else{
+				$sociNextBtn.addClass("gray").off("click");
+			}
+		}
+		
+		function nextFun3(){
+			if(validFun3()){
+				SubFun3();
+
+			}
+		}
+		function validFun3(){
+			var stimer=null;
+			if(!_v.mobile($relationPhone.val())){
+				spayErrorMsg(stimer,"联系人手机号格式错误");
+				return false;
+			}
+			if(!_v.mobile($colleagePhone.val())){
+				spayErrorMsg(stimer,"同事手机号格式错误");
+				return false;
+			}
+			if($qqNum.val()!=""&&(!_v.qq($qqNum.val()))){
+				spayErrorMsg(stimer,"qq号码格式不正确");
+				return false;
+			}
+			if($webchatNum.val()!=""&&(!_v.weChat($webchatNum.val()))){
+				spayErrorMsg(stimer,"微信号码格式不正确");
+				return false;
+			}
+			if($sinaNum.val()!=""&&(!_v.vSina($sinaNum.val()))){
+				spayErrorMsg(stimer,"微博账号格式不正确");
+				return false;
+			}
+			
+			return true;
+		}
+		
+		function SubFun3(){
+			var data={
+				"relativesName":$("#kinContacts").val(),
+				"relationship":$("#relationShip").val(),
+				"relativesPhone":$("#relationPhone").val(),
+				"contactName":$("#colleage").val(),
+				"contactPhone":$("#colleagePhone").val(),
+				"qq":$("#qqNum").val(),
+				"wechat":$("#webchatNum").val(),
+				"weibo":$("#sinaNum").val()
+			}
+			$.ajax({
+             	type: "post",
+	            dataType: "json",
+	            url: apiPath+"beautiful/addSocialInfo?t=" + (+new Date()),
+	            data: data,
+	            beforeSend: function (XMLHttpRequest) {
+					loader.showL();
+	            },
+	            success:function(data) {
+					if(data.errorCode==0){
+						//alert("ok")
+						//location.href="auditStatus.html"
+					}else {
+						spayErrorMsg(stimer,data.errorMessage,2000);
+					}
+	                loader.hideL();
+					location.href = urlPath + 'auditStatus.html';
+	            },
+	            error: function(d){
+	            	spayErrorMsg(stimer,"网络错误",2000);
+	            	loader.hideL();
+	            }
+	        });
+		}
+		}
+	</script>
+</body>
+</html>

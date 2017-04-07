@@ -1,0 +1,40 @@
+{
+  "goods": [
+    {
+      "productname": "瘦脸针1号",
+      "price": 290,
+      "description": "效果非常好",
+      "sellCount": 0
+    },
+    {
+      "productname": "瘦脸针2号",
+      "price": 1888,
+      "description": "效果非常好",
+      "sellCount": 0
+    },
+    {
+      "productname": "瘦脸针3号",
+      "price": 666,
+      "description": "效果非常好",
+      "sellCount": 0
+    },
+    {
+      "productname": "瘦脸针4号",
+      "price": 8888,
+      "description": "效果非常好",
+      "sellCount": 0
+    },
+    {
+      "productname": "瘦脸针5号",
+      "price": 560,
+      "description": "效果非常好",
+      "sellCount": 0
+    },
+    {
+      "productname": "瘦脸针6号",
+      "price": 899,
+      "description": "效果非常好",
+      "sellCount": 0
+    }
+  ]
+}

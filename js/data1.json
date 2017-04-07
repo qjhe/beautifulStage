@@ -1,0 +1,25 @@
+{
+	"errorCode":"0",
+	"isregister":"1",
+	"issocial":"0",
+	"description": "已注册",
+	"loginStatus":"1",
+	"data":[{"isrealname":false,
+		"isbindcard":false,
+		"issocial":false,
+		"userName":"动态"}],
+	"idCard":"13111222222222222",
+	"cardno":"13222222222222222222222",
+	"mobile":"1222122",
+	"qq":"2343234323",
+	"weixin":"2533728748",
+	"weibo":"13523876543@sina.com",
+	"relativesName":"张三",
+	"relationship":"父母",
+	"relativesPhone":"15210198276",
+	"contactName":"小王",
+	"contactPhone":"1101010110101"
+	
+}
+
+

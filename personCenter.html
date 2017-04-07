@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>个人中心</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta name="apple-wap-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+	<link rel="stylesheet" href="js/bone/mobilebone.css">
+	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/icon.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="js/bone/mobilebone.animate.css">
+	<script src="js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/base.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	    remFn(10);
+	</script>
+</head>
+<body class="bodyNobg">
+	<div class="page out" id="personCenter">
+		<div class="commWidth">
+			<header class="headerBg">
+				<div class="left"><a href="javascript:javascript:location.href = urlPath + 'accountCenter.html'"></a><i class="icon-keyboard_arrow_left"></i></div>
+				<div class="title">个人中心</div>
+			</header>
+			<div class="beauWrap">
+				<ul class="bs-infolist">
+					<li class="bs-infoItem clearFiex">
+						<span class="bs-info-tit">姓名</span>
+						<input type="text" name="" id="userName" value="" class="bs-info-inp fr" readonly="readonly"/>
+					</li>
+					<li class="bs-infoItem clearFiex">
+						<span class="bs-info-tit">手机号</span>
+						<input type="text" name="" id="phoneNum"  value="" class="bs-info-inp fr"  readonly="readonly"/>
+					</li>
+					<li class="bs-infoItem clearFiex modyPwdLi">
+						<a href="#modifyPwd">
+							<span class="bs-info-tit">更改登录密码</span>
+							<span class="icon-keyboard_arrow_right fr rightIcon"></span>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;" class="Bs-Btn quitBtn" id="quitBtn">退出</a>
+					</li>
+				</ul>
+				<div class="spay-msg-box"></div>
+			</div>
+		</div>
+	</div>
+	<div class="page out" id="modifyPwd">
+		<div class="commWidth">
+			<header class="headerBg">
+				<div class="left"><a href="#personCenter" data-rel="back"></a><i class="icon-keyboard_arrow_left"></i></div>
+				<div class="title">修改密码</div>
+			</header>
+			<div class="beauWrap">
+				<ul class="bs-info-rg">
+					<li class="bs-inpt bs-lgpwd">
+						<input type="password" name="" id="oldPwd" value="" placeholder="请输入旧登录密码" style="width: 6.5rem;" autocomplete="off"/>
+					</li>
+					<li class="bs-inpt bs-lgpwd">
+						<input type="password" name="" id="nPwd" value="" placeholder="请输入新登录密码" style="width: 6.5rem;" autocomplete="off"/>
+					</li>
+					<li class="bs-inpt bs-lgpwd">
+						<input type="password" name="" id="nPwd2" value="" placeholder="请再次输入新登录密码" style="width: 6.5rem;" autocomplete="off"/>
+					</li>
+					<li class="bs-regLi"><a href="javascript:;" class="Bs-Btn gray" id="Bs-Btn">确定</a></li>
+					<!--bs-gray-->
+				</ul>
+				<input type="hidden" name="phoneNumhid" id="phoneNumhid" value="" />
+				<input type="hidden" name="tocken" id="tocken" value="" />
+				<div class="spay-msg-box"></div>
+			</div>
+		</div>
+	</div>
+
+	<script src="js/ssValidate.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jQuery.md5.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/bone/mobilebone.js"></script>
+	<script type="text/javascript">
+		loader.init();
+		var $oldPwd=$("#oldPwd"),$nPwd=$("#nPwd"),$nPwd2=$("#nPwd2"),$BsBtn=$("#Bs-Btn");
+		var _v = new mValidate();
+		var stimer=null;
+		//获取个人信息
+		getUserInfo();
+		function getUserInfo(){
+			$.ajax({
+				type: "post",
+				url:apiPath+"beautiful/getUserInfo?t=" + (+new Date()),
+				beforeSend: function (XMLHttpRequest) {
+					loader.showL();
+				},
+				success: function (data) {
+					var ret=data.data;
+					if(data.errorCode==0) {
+						if (ret.userName == null){
+							$("#userName").val("无");
+						}else{
+							$("#userName").val(ret.userName);
+						}
+						$("#phoneNumhid").val(ret.mobile);
+
+						$("#phoneNum").val(jiami(ret.mobile));
+					}else {
+						spayErrorMsg(stimer,data.errorMessage,2000);
+						setTimeout(function(){location.href="login.html";},1000);
+					}
+					loader.hideL();
+				},
+				error:function(){
+					loader.hideL();
+				}
+			});
+		}
+		/*获取新tocken*/
+		//getNewtocken();
+		$(document).on("input blur","#oldPwd,#nPwd,#nPwd2",function(){
+			highBtnFun();
+			var newV=$(this).val().replace(/[^a-zA-Z0-9\-]$/,"");
+			$(this).val(newV)
+		})
+
+
+		/*重置密码提交*/
+		function regFun(){
+			if(validFun()){
+				resetPwd();
+			}
+		}
+		//重置密码验证
+		function validFun(){
+			if(!_v.vPwd($oldPwd.val())){
+				spayErrorMsg(stimer,"密码格式不对");
+				return false;
+			}
+			if(!_v.vPwd($nPwd.val())){
+				spayErrorMsg(stimer,"密码格式不对");
+				return false;
+			}
+			if(!_v.vPwd($nPwd2.val())){
+				spayErrorMsg(stimer,"密码格式不对");
+				return false;
+			}
+
+			if($oldPwd.val()==$nPwd.val()){
+				spayErrorMsg(stimer,"新密码和旧密码重复");
+				return false;
+			}else if($nPwd.val()!=$nPwd2.val()){
+				spayErrorMsg(stimer,"两次输入不一致");
+				return false;
+			}
+
+			return true;
+		}
+		/*获取新的tocken值*/
+		/*function getNewtocken(){
+			$.ajax({
+				type:"POST",
+				url: "https://app.jianguodai.com/appBeCalled/getToken?t=" + (+new Date()),
+				data:{accesstoken:$('#tocken').val()},
+				beforeSend:function(){},
+				success:function(data) {
+					var result=data.data;
+					if(data.errorCode==0){
+						if(result.accessToken==$("#tocken").val()){
+							return false;
+						}else{
+							localStorage.tocken=result.accessToken;
+							$('#tocken').val(localStorage.tocken);
+						}
+					}
+				},
+				error: function(d){
+					spayErrorMsg(stimer,"网络错误",2000);
+					loader.hideL();
+				}
+			});
+		}*/
+		//重置密码
+		function resetPwd(){
+			var data={
+				oldpassword: $.md5($("#oldPwd").val()),
+				newpassword: $.md5($("#nPwd").val()),
+				username:$("#phoneNumhid").val()
+			};
+			$.ajax({
+				type:"POST",
+				url: apiPath+"/appBeCalled/resetPassword?t=" + (+new Date()),
+				data:data,
+				beforeSend:function(){
+					loader.showL();
+				},
+				success:function(data) {
+					if(data.errorCode == 0) {
+						spayErrorMsg(stimer,"修改成功,请重新登录",1500);
+						location.href="login.html";
+					} else {
+						spayErrorMsg(stimer,data.errorMessage,2000);
+					}
+					loader.hideL();
+				},
+				error: function(d){
+					spayErrorMsg(stimer,"网络错误",2000);
+					loader.hideL();
+				}
+			});
+		}
+		function highBtnFun(){
+			if($oldPwd.val()!=""&&$nPwd.val()!=""&&$nPwd2.val()!=""){
+				$BsBtn.removeClass("gray").off("click").on("click",regFun);
+			}else{
+				$BsBtn.addClass("gray").off("click");
+			}
+		}
+
+		$("#quitBtn").on("click",function(){
+			if(getCookie("score_ntes_ncid")){
+				setCookie("score_ntes_ncid","",-1);
+				location.href=urlPath+"productList.html";
+			}
+		})
+
+	</script>
+</body>
+</html>

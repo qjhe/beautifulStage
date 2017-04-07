@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<title>社交信息</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+	<meta name="apple-wap-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no"/>
+	<meta name="apple-wap-web-app-status-bar-style" content="black-translucent">
+	<link rel="stylesheet" type="text/css" href="css/icon.css"/>
+	<link rel="stylesheet" type="text/css" href="css/base.css"/>
+	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+	<script src="js/jquery-2.1.4.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/base.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	    remFn(10);
+	</script>
+</head>
+<body class="bodyNobg">
+	<div class="commWidth">
+		<header class="headerBg">
+			<a href="javascript:history.go(-1);"></a>
+		    <div class="left"><i class="icon-keyboard_arrow_left"></i></div>
+		    <div class="title">信用资料</div>
+		</header>
+		<div class="beauWrap">
+			<div class="bs-credInfo clearFiex">
+				<div class="bs-creItem">
+					<div class="bs-crePic active">
+						<span class="icon-card"></span>
+						<span class="bs-creLine-right active"></span>
+					</div>
+					<p>身份认证</p>
+				</div>
+				<div class="bs-creItem">
+					<div class="bs-crePic active">
+						<span class="icon-phone"></span>
+						<span class="bs-creLine-left active"></span>
+						<span class="bs-creLine-right active"></span>
+					</div>
+					<p>绑定银行卡</p>
+				</div>
+				<div class="bs-creItem">
+					<div class="bs-crePic active">
+						<span class="icon-msg bs-creFont"></span>
+						<span class="bs-creLine-left active"></span>
+					</div>
+					<p>社交信息</p>
+				</div>
+			</div>
+			<ul class="bs-infolist">
+				<li class="bs-infoItem  clearFiex">
+					<span class="bs-info-tit">亲属联系人</span>
+					<input type="text" name="" id="kinContacts" value="" class="bs-info-inp" autocomplete="off" placeholder="请输入亲属联系人"/>
+				</li>
+				<li class="bs-infoItem  clearFiex">
+					<span class="bs-info-tit">与本人关系</span>
+					<input type="text" name="" id="relationShip"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入与本人关系"/>
+				</li>
+				<li class="bs-infoItem  clearFiex">
+					<span class="bs-info-tit">联系电话</span>
+					<input type="tel" name="" id="relationPhone"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入联系电话" max="11" maxlength="11"/>
+				</li>
+				<li class="bs-infoItem  clearFiex">
+					<span class="bs-info-tit">同事联系人</span>
+					<input type="text" name="" id="colleage"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入同事联系人"/>
+				</li>
+				<li class="bs-infoItem  clearFiex">
+					<span class="bs-info-tit">联系电话</span>
+					<input type="tel" name="" id="colleagePhone"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入联系电话" max="11" maxlength="11"/>
+				</li>
+				<li class="SociInfotit">QQ号码或微信账号至少填写一项</li>
+				<li class="bs-infoItem  clearFiex">
+					<span class="bs-info-tit">QQ号码</span>
+					<input type="tel" name="" id="qqNum"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入QQ号码"/>
+				</li>
+				<li class="bs-infoItem  clearFiex">
+					<span class="bs-info-tit">微信账号</span>
+					<input type="text" name="" id="webchatNum"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入微信账号"/>
+				</li>
+				<li class="bs-infoItem  clearFiex">
+					<span class="bs-info-tit">新浪微博账号（选填）</span>
+					<input type="text" name="" id="sinaNum"  value="" class="bs-info-inp" autocomplete="off" placeholder="请输入新浪微博账号"/>
+				</li>
+				<li  class="bs-regLi">
+					<a href="javascript:;" class="Bs-Btn gray">下一步</a>
+				</li>
+			</ul>
+			<div class="spay-msg-box"></div>
+		</div>
+	</div>
+	
+	<script src="js/ssValidate.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jQuery.md5.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var $kinContacts=$("#kinContacts"),
+			$relationShip=$("#relationShip"),
+			$relationPhone=$("#relationPhone"),
+			$colleage=$("#colleage"),
+			$colleagePhone=$("#colleagePhone"),
+			$qqNum=$("#qqNum"),
+			$webchatNum=$("#webchatNum"),
+			$sinaNum=$("#sinaNum"),
+			$BsBtn=$(".Bs-Btn");
+			var isFlag=false;
+			var _v=new mValidate();
+			loader.init();
+		var _v=new mValidate();
+		$(".bs-info-inp").on("input blur",highNextbtn)
+		function highNextbtn(){
+			if($qqNum.val()==""&&$webchatNum.val()==""){
+				isFlag=false;
+			}else{
+				isFlag=true;
+			}
+			if($kinContacts.val()!=""&&$relationShip.val()!=""&&$relationPhone.val()!=""&&$colleage.val()!=""&&$colleagePhone.val()!=""&&isFlag){
+				$BsBtn.removeClass("gray").off("click").on("click",nextFun);
+			}else{
+				$BsBtn.addClass("gray").off("click");
+			}
+		}
+		
+		function nextFun(){
+			var stimer=null;
+			if(validFun()){
+				SubFun();
+			}
+		}
+		function validFun(){
+			var stimer=null;
+			if(!_v.mobile($relationPhone.val())){
+				spayErrorMsg(stimer,"联系人手机号格式错误");
+				return false;
+			}
+			if(!_v.mobile($colleagePhone.val())){
+				spayErrorMsg(stimer,"同事手机号格式错误");
+				return false;
+			}
+			return true;
+		}
+		
+		function SubFun(){
+			var data={
+				"kinContacts":$("#kinContacts").val(),
+				"relationShip":$("#relationShip").val(),
+				"relationPhone":$("#relationPhone").val(),
+				"colleage":$("#colleage").val(),
+				"colleagePhone":$("#colleagePhone").val(),
+				"qqNum":$("#qqNum").val(),
+				"webchatNum":$("#webchatNum").val(),
+				"sinaNum":$("#sinaNum").val()
+			}
+			$.ajax({
+             	type: "post",
+	            dataType: "json",
+	            url: apiPath+"?t=" + (+new Date()),
+	            data: data,
+	            beforeSend: function (XMLHttpRequest) {
+					loader.showL();
+	            },
+	            success:function(data) {
+					if(data.errorCode==0){
+						spayErrorMsg(stimer,"成功",1500);
+						location.href="auditStatus.html"
+					}else {
+						spayErrorMsg(stimer,data.errorMessage,2000);
+					}
+	                loader.hideL();
+	            },
+	            error: function(d){
+	            	spayErrorMsg(stimer,"网络错误",2000);
+	            	loader.hideL();
+	            }
+	        });
+		}
+	</script>
+</body>
+</html>

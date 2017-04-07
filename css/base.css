@@ -1,0 +1,217 @@
+@charset "utf-8";
+/* CSS Document */
+input,textarea,dd{margin:0;padding:0;border:none; outline:none;}
+a,button,input,em,textarea,select,span,div,i{-webkit-tap-highlight-color:rgba(255,0,0,0);}
+input{outline:none}
+textarea{ resize:none; overflow:auto; -webkit-appearance: none;}
+em{ font-style:normal;}
+ul,dl{margin:0;padding:0; list-style:none;}
+h1,p,h2,h3,h4{margin:0; font-weight:normal;}
+a{ text-decoration:none;}
+img{ border:none; vertical-align:top;}
+strong,em{ font-weight:normal;}
+body{margin:0; font-family:Arial,"微软雅黑";color:#666; font-size:0.3125rem; line-height:0.5625rem;background: #f5f5f9;/*行高36px */background: url("../images/bodyBg.jpg") no-repeat center top #5ac9ae; background-size: 10rem;-webkit-background-size:10rem;}
+table, caption, tbody, tfoot, thead, tr, th, td {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        font-size: 100%;
+        vertical-align: baseline;
+        background: transparent;
+		font-weight:normal;
+}
+i,em{font-style: normal}
+table {border-collapse: collapse;border-spacing: 0;} 
+input,button,a{
+	-webkit-appearance: none;
+	border-radius: 0;
+}
+/* public css */
+.clearFiex{ zoom:1;}
+.clearFiex:after{ content:""; display:block; clear:both;}
+.fl{ float:left;}.fr{ float:right;}
+.red-color{ color:#ff4b4b;}.white-bg-color{ background-color:#fff;}
+.gbg{ background-color: #f9f9f9;}
+.padding30{
+    padding: 0 0.4688rem;
+}
+input:-webkit-autofill {
+-webkit-box-shadow: 0 0 0px 1000px #fff inset; 
+}
+.meda{
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0,0,0,0.4);
+	z-index: 100;
+}
+.toe{
+    /*超出省略号*/
+    word-break:keep-all;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.spay-msg-box{
+	position: fixed;
+	display: none;
+    width: 8.4375rem;
+    background: rgba(0,0,0,0.5);
+    padding: 0.3438rem 0.2rem;
+    left: 50%;
+    top: 5rem;
+    margin-left: -4.4188rem;
+    color: #fff;
+    border-radius: 0.0625rem;
+    text-align: center;
+    font-size: 0.375rem;
+}
+.scroll-no{
+    width: 100%!important;
+    height: 100%!important;
+    overflow: hidden!important;
+}
+/* loading s */
+.meba-transparent{ top:0px; left:0px; width:100%; height:100%;
+    position:fixed;
+    _position:absolute;
+    _top:expression(document.documentElement.scrollTop+document.documentElement.clientHeight/2-this.clientHeight/2);
+    _left:expression(document.documentElement.clientWidth/2-this.clientWidth/2);
+    background-color:#000;
+    opacity:0;
+    filter:alpha(opacity=0);
+    z-index:9999998;
+    display: none;
+}
+.meba{
+    opacity: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: rgba(0,0,0,.4);
+    transition: all .5s;
+    -webkit-transition: all .5s;
+}
+.meba.active{
+    opacity: 1;
+    z-index: 10;
+}
+.loader{ display:none; position:absolute; top:50%; left:50%; margin-top:-50px; /* margin-left:-0.6rem; */ }
+@-webkit-keyframes ball-spin-fade-loader {
+    50% {
+        opacity: 0.3;
+        -webkit-transform: scale(0.4);
+        transform: scale(0.4); }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: scale(1);
+        transform: scale(1); } }
+
+@keyframes ball-spin-fade-loader {
+    50% {
+        opacity: 0.3;
+        -webkit-transform: scale(0.4);
+        transform: scale(0.4); }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: scale(1);
+        transform: scale(1); } }
+.ball-spin-fade-loader {
+    position: relative; }
+.ball-spin-fade-loader > div:nth-child(1) {
+    top: 25px;
+    left: 0;
+    -webkit-animation: ball-spin-fade-loader 1s 0s infinite linear;
+    animation: ball-spin-fade-loader 1s 0s infinite linear; }
+.ball-spin-fade-loader > div:nth-child(2) {
+    top: 17.04545px;
+    left: 17.04545px;
+    -webkit-animation: ball-spin-fade-loader 1s 0.12s infinite linear;
+    animation: ball-spin-fade-loader 1s 0.12s infinite linear; }
+.ball-spin-fade-loader > div:nth-child(3) {
+    top: 0;
+    left: 25px;
+    -webkit-animation: ball-spin-fade-loader 1s 0.24s infinite linear;
+    animation: ball-spin-fade-loader 1s 0.24s infinite linear; }
+.ball-spin-fade-loader > div:nth-child(4) {
+    top: -17.04545px;
+    left: 17.04545px;
+    -webkit-animation: ball-spin-fade-loader 1s 0.36s infinite linear;
+    animation: ball-spin-fade-loader 1s 0.36s infinite linear; }
+.ball-spin-fade-loader > div:nth-child(5) {
+    top: -25px;
+    left: 0;
+    -webkit-animation: ball-spin-fade-loader 1s 0.48s infinite linear;
+    animation: ball-spin-fade-loader 1s 0.48s infinite linear; }
+.ball-spin-fade-loader > div:nth-child(6) {
+    top: -17.04545px;
+    left: -17.04545px;
+    -webkit-animation: ball-spin-fade-loader 1s 0.6s infinite linear;
+    animation: ball-spin-fade-loader 1s 0.6s infinite linear; }
+.ball-spin-fade-loader > div:nth-child(7) {
+    top: 0;
+    left: -25px;
+    -webkit-animation: ball-spin-fade-loader 1s 0.72s infinite linear;
+    animation: ball-spin-fade-loader 1s 0.72s infinite linear; }
+.ball-spin-fade-loader > div:nth-child(8) {
+    top: 17.04545px;
+    left: -17.04545px;
+    -webkit-animation: ball-spin-fade-loader 1s 0.84s infinite linear;
+    animation: ball-spin-fade-loader 1s 0.84s infinite linear; }
+.ball-spin-fade-loader > div {
+    background-color: #f1831e;
+    width: 15px;
+    height: 15px;
+    border-radius: 100%;
+    margin: 2px;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    position: absolute; }
+/* loading e */
+.commWidth{
+	width: 10rem;
+	margin: 0 auto;
+}
+
+header{
+    height: 1.4844rem;
+    line-height: 1.4844rem;
+    display: flex;
+    display: -webkit-flex;
+    padding: 0 0.4688rem;
+    color: #fff;
+}
+header .left,header .right{
+    flex: 1rem 0 0;
+    font-size: 0;
+    position: relative;
+}
+header .left i,header .right i{
+    font-size: .8rem;
+    display: inline-block;
+    height: 1.4844rem;
+    line-height: 1.4844rem;
+}
+header .left > a{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+header .title{
+    flex: 1;
+    text-align: center;
+}
+
+.page{
+    overflow-y: scroll;
+}
